@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>私聊区 · 加密</title><style>:root { --fg:#1f2328; --muted:#656d76; --bg:#ffffff; --card:#f6f8fa; --accent:#0969da; --border:#d0d7de; }
+* { box-sizing:border-box; }
+body { margin:0; color:var(--fg); background:var(--bg);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  line-height:1.75; font-size:16px; }
+.container { max-width:860px; margin:0 auto; padding:32px 20px 80px; }
+a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+header.site { border-bottom:1px solid var(--border); padding:20px 0; margin-bottom:32px; }
+header.site .title { font-size:20px; font-weight:700; }
+header.site .sub { color:var(--muted); font-size:13px; margin-top:4px; }
+.crumbs { color:var(--muted); font-size:13px; margin-bottom:20px; }
+h1 { font-size:26px; line-height:1.35; margin:8px 0 20px; }
+h2 { font-size:20px; margin:32px 0 12px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+h3 { font-size:17px; margin:24px 0 8px; }
+blockquote { margin:12px 0; padding:10px 16px; background:var(--card); border-left:3px solid var(--accent); border-radius:6px; color:#3b424b; }
+code { background:var(--card); border:1px solid var(--border); border-radius:4px; padding:1px 6px; font-size:.88em; font-family:ui-monospace,Menlo,monospace; }
+pre { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px; overflow-x:auto; }
+pre code { border:0; padding:0; background:none; }
+table { border-collapse:collapse; width:100%; margin:14px 0; font-size:14.5px; }
+th,td { border:1px solid var(--border); padding:7px 12px; text-align:left; vertical-align:top; }
+th { background:var(--card); }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px; margin:16px 0 8px; }
+.card { display:block; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 16px; }
+.card .name { font-weight:700; }
+.card .hint { color:var(--muted); font-size:13px; margin-top:6px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+ul.meta { list-style:none; padding:0; margin:0; }
+ul.meta li { padding:6px 0; border-bottom:1px dashed var(--border); font-size:15px; }
+footer { color:var(--muted); font-size:12px; margin-top:56px; border-top:1px solid var(--border); padding-top:16px; }
+
+.lock { max-width:420px; margin:18vh auto 0; text-align:center; }
+.lock input { width:100%%; padding:12px 14px; font-size:16px; margin:14px 0; border:1px solid var(--border); border-radius:8px; }
+.lock button { width:100%%; padding:12px; font-size:16px; border:0; border-radius:8px; background:var(--accent); color:#fff; cursor:pointer; }
+.err { color:#cf222e; font-size:14px; min-height:20px; }
+.wrap { display:none; max-width:980px; margin:0 auto; padding:24px 16px 80px; display:none; }
+.layout { display:grid; grid-template-columns:280px 1fr; gap:24px; }
+.nav { border-right:1px solid var(--border); padding-right:12px; }
+.nav a { display:block; padding:8px 10px; border-radius:6px; font-size:14px; color:var(--fg); }
+.nav a.on { background:var(--card); font-weight:700; }
+@media (max-width:760px){ .layout{ grid-template-columns:1fr; } .nav{ border-right:0; border-bottom:1px solid var(--border); padding-bottom:10px; } }
+</style></head><body>
+<div class="lock" id="lock">
+  <h2>🔒 私聊加密区</h2>
+  <p style="color:var(--muted);font-size:14px">内容以 AES-256-GCM 加密存储,输入密码解锁。</p>
+  <input type="password" id="pw" placeholder="访问密码" autocomplete="off">
+  <button onclick="unlock()">解锁</button>
+  <div class="err" id="err"></div>
+</div>
+<div class="wrap" id="wrap">
+  <div class="layout">
+    <nav class="nav" id="nav"></nav>
+    <div id="content"></div>
+  </div>
+</div>
+<script>
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+let PAGES = [], CATS = [];
+async function unlock() {
+  const pw = document.getElementById('pw').value;
+  const err = document.getElementById('err');
+  err.textContent = '';
+  try {
+    const bundle = await (await fetch('bundle.json')).json();
+    const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt:b64(bundle.salt), iterations:100000, hash:'SHA-256'},
+      km, {name:'AES-GCM', length:256}, false, ['decrypt']);
+    const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(bundle.iv)}, key, b64(bundle.ct));
+    const data = JSON.parse(new TextDecoder().decode(pt));
+    PAGES = data.pages || []; CATS = data.cats || [];
+    document.getElementById('lock').style.display = 'none';
+    document.getElementById('wrap').style.display = 'block';
+    renderNav(); show(0);
+  } catch (e) { err.textContent = '密码错误或数据损坏'; }
+}
+function renderNav() {
+  const nav = document.getElementById('nav');
+  const items = [];
+  PAGES.forEach((p, i) => items.push(`<a href="#" data-i="${i}" onclick="show(${i},'p');return false">${p.title}</a>`));
+  CATS.forEach((c, j) => items.push(`<a href="#" style="color:var(--muted)" onclick="show(${j},'c');return false">分类·${c.name}</a>`));
+  nav.innerHTML = items.join('');
+}
+function show(i, kind) {
+  const list = kind === 'c' ? CATS : PAGES;
+  const item = list[i];
+  document.getElementById('content').innerHTML =
+    `<div class="crumbs">私聊加密区 / ${item.title}</div>` + item.html;
+  document.querySelectorAll('.nav a').forEach(a => a.classList.remove('on'));
+  const el = document.querySelector(`.nav a[data-i="${i}"]`);
+  if (el) el.classList.add('on');
+}
+document.getElementById('pw').addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+</script></body></html>

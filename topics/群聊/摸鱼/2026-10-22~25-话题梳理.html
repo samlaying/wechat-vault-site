@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>摸鱼 · 2026-10-22~25-话题梳理</title><link rel="stylesheet" href="assets/style.css">
+</head><body><div class="container">
+<header class="site"><div class="title"><a href="index.html">微信数字资产库 · 分析站</a> · <a href="private/index.html">🔒 私聊区</a></div>
+<div class="sub">由本地 vault 生成 · raw 层永不上云</div></header>
+<div class="crumbs"><a href="index.html">首页</a> / 群聊 / 摸鱼</div>
+<h1>摸鱼 群 话题梳理(2026-10-22 ~ 10-25)</h1>
+<ul><li>数据源: <code>raw/群聊/摸鱼/2026-10-22~25-增量.md</code>(915 条)</li><li>群性质:羊毛/自托管/灰产边缘的极客交流群,活跃度极高(3 天 900+ 条)</li><li>核心人物:<code>ઇωyßଓ°</code>(技术输出核心)、<code>今夕</code>(羊毛信息差之王)、<code>mz</code>/<code>👾托物言志卡</code>(积极学徒)、<code>赴道行空</code>(服务器求购者)</li><li>本人(<code>ᵐᵉ</code>/萌绳)参与度:中等,主要是买 muse、买 2 元加拿大小鸡卡在 webssh、想&quot;开几个 muse 把梯子钱赚回来&quot;</li></ul>
+<h2>话题清单</h2>
+<h3>1. Muse 账号经济学(10-22 ~ 10-24)</h3>
+<p>Meta 的 agent 产品 Muse 成为群内硬通货。围绕它形成了完整的价格讨论:45 元拼 310 档满额(2 人起拼)、有人用 ChatGPT 搜到 20 元满级号、JIN 实付 34.12 元(含支付宝 5% 手续费)、35 元满级渠道在 TG 群。注册路径:FB 老号可直接登录,新号要手机验证;国内招行/中行信用卡可以一试,低价号多是&quot;自己刷的&quot;。担心点:关联 IP 封号风险、被 Meta&quot;养肥了再弄&quot;。</p>
+<h3>2. InstaBox 免费 VPS 政策地震(10-23 ~ 10-25)</h3>
+<p>InstaBox(免费 5 台沙箱服务器)是近期最大热点:候补名单陆续出号(JIN、mz 到手,本人一周还没收到)。<strong>坏消息:AI 读协议确认 12 月 1 日起回收 4 台只留 1 台</strong>,且单次最多运行 8 小时、沙箱退出即清空。应对:已有人让 muse 把服务迁移到 1 号机。技术延伸:<code>(空名)</code> 把 xnvgatebox 挂在 instabox 上做出网节点/机场。</p>
+<h3>3. 白嫖云服务器大盘点(10-24)</h3>
+<p>今夕的羊毛库存引发围观:移动云盘 9.9 元/月长期云电脑开了 <strong>5 个号</strong>、河北电信 2024 bug 车 0 元云电脑 <strong>4 台</strong>、0 月租二代阿福卡、电信云智手机免费。其他线索:阿里免费 3 个月、华为免费 6 个月、AWS 新号、甲骨文抢机(间隔设 90s+ 否则 kill CAP)、闲鱼 8核8G 69 元/年(极光云,有跑路/乱封号前科:有人因&quot;长期占用下行通道&quot;被封)。赴道行空悔恨现场:曾 9.9 买移动云主机又退了,现在想买回来发现活动没了(&quot;错过了一个亿&quot;)。</p>
+<h3>4. 内网穿透与 SSH 隧道技术(10-23 ~ 10-24)⭐含金量最高</h3>
+<p><code>ઇωyßଓ°</code> 贡献了完整教程:从 muse 沙箱(无公网 IP、禁直连 TCP)经 <code>hatch-egress-proxy:3128</code> HTTP CONNECT 代理 SSH 出去,再用 <code>-R</code> 反向隧道把沙箱服务暴露到小鸡公网口。配套玩法:2 块钱小鸡(lxc.neko.mo.cn,买加拿大别买美国——激活快)、frp 内网穿透、ttyd 装 webssh(<code>apk add ttyd; nohup ttyd -p 7681 -W login</code>)。本人实操卡点:加拿大小鸡 webssh 打不开、公钥加不进去(站长说&quot;坏了,两三块钱别要求了,没有任何售后&quot;),muse 也被拒——群友结论:先人肉登一次加公钥,或换个旁聊引导 muse 别那么直接。</p>
+<h3>5. Hark 逆向与多账号协作(10-25)⭐新热点</h3>
+<p><code>ઇωyßଓ°</code> 逆向 Hark(Google 可下的免费 agent app,配云主机)自做多开 app:临时邮箱自动注册、多账号组队做抖音视频(写文案/做图/做视频分工)。关键情报:hark 云主机<strong>可做出网节点做机场(muse 做不了)</strong>、重置但有永久存储区、无限注册、一个账号一个 IP+指纹。模型传闻:&quot;opus5.5&quot;、有人反代出来说&quot;感觉 glm5.2&quot;。已开源打包分享源码。</p>
+<h3>6. 灰产边缘观察(10-25)</h3>
+<p>AI 女号聊天赚钱项目(&quot;注册女号和别人聊,男号花钱&quot;,还有人卖这个项目)、自动注册脚本(一下午注册 4 个号)、反代千问 500+ 账号被阿里升级团灭、临时邮箱+接码产业。群内对此类玩法的态度是玩笑式围观,但信息浓度不低。</p>
+<h2>可跟进动作</h2>
+<ul><li>InstaBox 12.1 大限前,如果有号,值得把有价值服务迁到 1 号机或备好 hark 替代</li><li>Hark 值得注册一个玩:免费、能做机场、永久存储</li><li>小鸡 webssh 问题未解决,下次问 <code>ઇωyßଓ°</code> 要 nat 端口清单直接给 muse</li></ul>
+<footer>生成于 2026-10-25 05:52 · build_site.py</footer>
+</div></body></html>
