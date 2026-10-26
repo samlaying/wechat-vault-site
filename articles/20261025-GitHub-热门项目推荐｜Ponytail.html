@@ -7,50 +7,37 @@
 <header class="site"><div class="title"><a href="../index.html">微信数字资产库 · 分析站</a> · <a href="../articles/index.html">📄 公众号</a> · <a href="../private/index.html">🔒 私聊区</a></div>
 <div class="sub">由本地 vault 生成 · raw 层永不上云</div></header>
 <div class="crumbs"><a href="../index.html">首页</a> / 公众号 / 2026-10-25</div>
-<h1>GitHub 热门项目推荐｜Ponytail</h1>
+<div class="article"><h1>GitHub 热门项目推荐｜Ponytail</h1>
 <p>码仓观察</p>
-<p>_2026年08月31日 14:20_ __ _ _ _ _ _ 北京  _</p>
-<p>在小说阅读器读本章</p>
-<p>去阅读</p>
-<p>GITHUB SYSTEM NOTE  2026.08.31</p>
+<p>GITHUB SYSTEM NOTE 2026.08.31</p>
 <p>GitHub 热门项目推荐｜Ponytail</p>
 <p>给 AI Agent 扎一条“少写代码”的马尾辫</p>
 <p>先问这行是否必须存在，再让 Agent 动手。</p>
 <p>约 117.3k Stars，6.4k Forks，最新版本 v4.9.0。</p>
-<p>LAZY SENIOR MODE  MIT LICENSE</p>
+<p>LAZY SENIOR MODE MIT LICENSE</p>
 <p>雷猴啊，家银们！</p>
-<p>这次聊一个名字很飘逸、脾气很节制的项目：  Ponytail  。它在 GitHub 已拿到约 11.7 万</p>
-<p>Star。仓库塑造了一位扎长马尾、戴椭圆眼镜的老程序员：你递给他五十行代码，他沉默两秒，改成一行，然后去喝咖啡。</p>
-<p>!<a href="https://mmbiz.qpic.cn/mmbiz_jpg/NiaL5dBSaUCiaZVRVicGAhdepGrQticjUfFX4sIubMAaXsWSdI8YWBtcMFVliaOulfHCCFRgpCricB0HwPYHPsC2WRNBukZpfxDFicsGg8En9BC4KI/640?from=appmsg">Ponytail：大马尾程序员把代码毛线剪成一条干净路径</a></p>
+<p>这次聊一个名字很飘逸、脾气很节制的项目： Ponytail 。它在 GitHub 已拿到约 11.7 万Star。仓库塑造了一位扎长马尾、戴椭圆眼镜的老程序员：你递给他五十行代码，他沉默两秒，改成一行，然后去喝咖啡。</p>
+<figure><img src="https://mmbiz.qpic.cn/mmbiz_jpg/NiaL5dBSaUCiaZVRVicGAhdepGrQticjUfFX4sIubMAaXsWSdI8YWBtcMFVliaOulfHCCFRgpCricB0HwPYHPsC2WRNBukZpfxDFicsGg8En9BC4KI/640?from=appmsg" alt="Ponytail：大马尾程序员把代码毛线剪成一条干净路径" loading="lazy" referrerpolicy="no-referrer"><figcaption>Ponytail：大马尾程序员把代码毛线剪成一条干净路径</figcaption></figure>
 <p>懒惰不是少读代码，而是看懂以后少造东西。</p>
 <p>01</p>
 <p>PART</p>
 <p>这是干什么的？</p>
 <p>WHAT IT IS</p>
-<p>Ponytail 不是新模型，也不是另一个 IDE。它是一套给 AI 编程 Agent 使用的 Skill、规则文件和插件，让 Agent</p>
-<p>在动手前先过一遍“懒人决策梯”：需求真的要做吗？仓库里已有现成实现吗？标准库、浏览器原生能力或已安装依赖能解决吗？只有这些路都不通，才写最小可用代码。</p>
-<p>它已经适配 Claude Code、Codex、OpenCode、Gemini CLI 等多种 Agent。插件还会在会话里持续注入规则，免得 Agent</p>
-<p>第一轮很克制，第三轮又开始建工厂、套接口，再加一堆“以后可能用到”的配置。</p>
+<p>Ponytail 不是新模型，也不是另一个 IDE。它是一套给 AI 编程 Agent 使用的 Skill、规则文件和插件，让 Agent在动手前先过一遍“懒人决策梯”：需求真的要做吗？仓库里已有现成实现吗？标准库、浏览器原生能力或已安装依赖能解决吗？只有这些路都不通，才写最小可用代码。</p>
+<p>它已经适配 Claude Code、Codex、OpenCode、Gemini CLI 等多种 Agent。插件还会在会话里持续注入规则，免得 Agent第一轮很克制，第三轮又开始建工厂、套接口，再加一堆“以后可能用到”的配置。</p>
 <p>02</p>
 <p>PART</p>
 <p>厉害在哪？</p>
 <p>WHY IT MATTERS</p>
-<p>“一行胜过五十行”只是外壳，真正有用的是那套判断顺序。比如做日期选择器，普通 Agent 可能安装</p>
-<p>flatpickr、写包装组件、补样式，再认真讨论时区。Ponytail 会先看一眼浏览器已有的  &lt;input type=&quot;date&quot;&gt;</p>
-<p>。有点扫兴，但通常能用。</p>
-<p>真实 Claude Code 实验，12 个功能任务，Haiku 4.5，每组 4 次：平均少写 54% 代码，Token 少 22%，成本低</p>
-<p>20%，耗时少 27%。日期选择器从平均 404 行缩到 23 行。</p>
-<p>换成已经很小的后端 CRUD，几组结果几乎持平。更有意思的是，早期“少写 80% 到 94%”的数字被质疑基线太话痨后，作者重做了 Agent</p>
-<p>实验，还把批评和局限留在仓库里。新实验仍只覆盖一个模型，n=4；安全测试也只是已知输入下的最低门槛，不是安全证明。这个项目挺会推销自己，也肯当众把水分挤掉。</p>
+<p>“一行胜过五十行”只是外壳，真正有用的是那套判断顺序。比如做日期选择器，普通 Agent 可能安装flatpickr、写包装组件、补样式，再认真讨论时区。Ponytail 会先看一眼浏览器已有的 &lt;input type=&quot;date&quot;&gt; 。有点扫兴，但通常能用。</p>
+<p>真实 Claude Code 实验，12 个功能任务，Haiku 4.5，每组 4 次：平均少写 54% 代码，Token 少 22%，成本低20%，耗时少 27%。日期选择器从平均 404 行缩到 23 行。</p>
+<p>换成已经很小的后端 CRUD，几组结果几乎持平。更有意思的是，早期“少写 80% 到 94%”的数字被质疑基线太话痨后，作者重做了 Agent实验，还把批评和局限留在仓库里。新实验仍只覆盖一个模型，n=4；安全测试也只是已知输入下的最低门槛，不是安全证明。这个项目挺会推销自己，也肯当众把水分挤掉。</p>
 <p>03</p>
 <p>PART</p>
 <p>谁适合用？什么时候用？</p>
 <p>WHO SHOULD USE IT</p>
-<p>如果你常让 AI Agent 写前端小功能、修 Bug、补 CRUD，最后却收到三层抽象和五个新文件，Ponytail</p>
-<p>很对症。它适合已有代码规范、希望小步提交的团队，也能在 Code Review 时查找可删除的依赖、样板代码和过早抽象。</p>
-<p>但别把它玩成代码高尔夫。Ponytail</p>
-<p>明确保留信任边界校验、防止数据丢失的错误处理、安全措施和可访问性。复杂交互、明确的设计系统要求、性能瓶颈或真实硬件校准，也不能被一句 YAGNI</p>
-<p>糊过去。Agent 已经写得足够小的时候，它不会凭空创造收益。</p>
+<p>如果你常让 AI Agent 写前端小功能、修 Bug、补 CRUD，最后却收到三层抽象和五个新文件，Ponytail很对症。它适合已有代码规范、希望小步提交的团队，也能在 Code Review 时查找可删除的依赖、样板代码和过早抽象。</p>
+<p>但别把它玩成代码高尔夫。Ponytail明确保留信任边界校验、防止数据丢失的错误处理、安全措施和可访问性。复杂交互、明确的设计系统要求、性能瓶颈或真实硬件校准，也不能被一句 YAGNI糊过去。Agent 已经写得足够小的时候，它不会凭空创造收益。</p>
 <p>04</p>
 <p>PART</p>
 <p>上手难不难？</p>
@@ -59,37 +46,30 @@
 <p>bash</p>
 <p>codex plugin marketplace add DietrichGebert/ponytail</p>
 <p>codex plugin add ponytail@ponytail</p>
-<p>然后进入  /hooks  审核两个生命周期钩子，重启或开启新会话。机器需要能在 PATH 里找到 Node.js。默认是 full 模式，也能切到更温和的</p>
-<p>lite，或更激进的 ultra。第一次建议从 full 开始，拿同一个小任务对比两次 diff，看看它删掉的是复杂度，还是你真正需要的能力。</p>
+<p>然后进入 /hooks 审核两个生命周期钩子，重启或开启新会话。机器需要能在 PATH 里找到 Node.js。默认是 full 模式，也能切到更温和的lite，或更激进的 ultra。第一次建议从 full 开始，拿同一个小任务对比两次 diff，看看它删掉的是复杂度，还是你真正需要的能力。</p>
 <p>05</p>
 <p>PART</p>
 <p>项目地址</p>
 <p>PROJECT LINK</p>
 <p>GitHub：https://github.com/DietrichGebert/ponytail</p>
-<p>截至 2026 年 8 月 31 日，仓库页面显示约 117.3k Stars、6.4k Forks，采用 MIT 许可证；最新版本为 8 月 7 日发布的</p>
-<p>v4.9.0。</p>
+<p>截至 2026 年 8 月 31 日，仓库页面显示约 117.3k Stars、6.4k Forks，采用 MIT 许可证；最新版本为 8 月 7 日发布的v4.9.0。</p>
 <p>CLOSING NOTE</p>
 <p>马尾辫不会替你做技术判断。它只是逼 Agent 在写下一行之前，先问一句：这行真的非写不可吗？</p>
 <p>记得点赞，收藏，关注喔！</p>
 <p>预览时标签不可点</p>
-<p>阅读原文  不喜欢</p>
-<p>微信扫一扫</p>
-<p>关注该公众号</p>
+<p>阅读原文 不喜欢</p>
+<p>微信扫一扫关注该公众号</p>
 <p>知道了</p>
-<p>微信扫一扫</p>
-<p>使用小程序</p>
+<p>微信扫一扫使用小程序</p>
 <hr>
-<p>取消  允许</p>
+<p>取消 允许</p>
 <hr>
-<p>取消  允许</p>
+<p>取消 允许</p>
 <hr>
-<p>取消  允许</p>
-<p>×  分析</p>
-<p>__</p>
-<p>!<a href="http://mmbiz.qpic.cn/mmbiz_png/NiaL5dBSaUCgDnajhktVSmoBJy2lEQYlwFJwKe0o1n7yzaWs29jUqU08pwibE8r4VluIns6VeJ2Otcu5MsRWLhuvhNQLoBbZzRzMAEWgQDk00/0?wx_fmt=png">作者头像</a></p>
-<p>微信扫一扫可打开此内容，</p>
-<p>使用完整服务</p>
-<p>：  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  。  视频  小程序  赞  ，轻点两下取消赞  在看  ，轻点两下取消在看</p>
-<p>分享  留言  收藏  听过</p>
-<footer>生成于 2026-10-25 20:57 · build_site.py</footer>
+<p>取消 允许</p>
+<p>× 分析</p>
+<figure><img src="http://mmbiz.qpic.cn/mmbiz_png/NiaL5dBSaUCgDnajhktVSmoBJy2lEQYlwFJwKe0o1n7yzaWs29jUqU08pwibE8r4VluIns6VeJ2Otcu5MsRWLhuvhNQLoBbZzRzMAEWgQDk00/0?wx_fmt=png" alt="作者头像" loading="lazy" referrerpolicy="no-referrer"><figcaption>作者头像</figcaption></figure>
+<p>微信扫一扫可打开此内容，使用完整服务</p>
+<p>： ， ， ， ， ， ， ， ， ， ， ， ， 。 视频 小程序 赞 ，轻点两下取消赞 在看 ，轻点两下取消在看分享 留言 收藏 听过</p></div>
+<footer>生成于 2026-10-25 21:43 · build_site.py</footer>
 </div></body></html>

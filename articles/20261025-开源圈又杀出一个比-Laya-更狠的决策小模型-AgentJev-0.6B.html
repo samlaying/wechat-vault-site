@@ -7,130 +7,64 @@
 <header class="site"><div class="title"><a href="../index.html">微信数字资产库 · 分析站</a> · <a href="../articles/index.html">📄 公众号</a> · <a href="../private/index.html">🔒 私聊区</a></div>
 <div class="sub">由本地 vault 生成 · raw 层永不上云</div></header>
 <div class="crumbs"><a href="../index.html">首页</a> / 公众号 / 2026-10-25</div>
-<h1>开源圈又杀出一个比 Laya 更狠的决策小模型 AgentJev-0.6B</h1>
-<p>原创  数智游牧  数智游牧  数智游牧</p>
-<p>_2026年09月23日 06:53_ __ _ _ _ _ _ 贵州  _</p>
-<p>在小说阅读器读本章</p>
-<p>去阅读</p>
-<p>![](https://mmbiz.qpic.cn/mmbiz_png/XuxaLeADVkyD8W6j9oSNX0fyfEUrTkCMZoTsteBR19rKxJSMP6hUrFGLx4beDOJoOvyTPEclYbWHZeiavyxmOIqgSDj4CyaQY4HwQFrleVdQ/640?wx_fmt=png&amp;from=appmsg)</p>
-<p>一个 0.6B 的决策小模型 9 月 21 日开源，它不生成一个字，解码 token 为 0，2000 道测试题上答对 1585 道，比 Laya</p>
-<p>已发布的权重多 45 道，而且只用了对方八成的训练数据。</p>
-<p>候选一多优势更大，64 个选项时靠共享前缀 KV 把冗余主干 token 从 33547 压到 2551，比 Laya</p>
-<p>快约一倍，状态容量也是对方的两倍。权重、训练代码、推理服务、客户端全在 Apache-2.0 下开源，一次训练 841 秒，个人可以接着训练。</p>
+<div class="article"><h1>开源圈又杀出一个比 Laya 更狠的决策小模型 AgentJev-0.6B</h1>
+<figure><img src="https://mmbiz.qpic.cn/mmbiz_png/XuxaLeADVkyD8W6j9oSNX0fyfEUrTkCMZoTsteBR19rKxJSMP6hUrFGLx4beDOJoOvyTPEclYbWHZeiavyxmOIqgSDj4CyaQY4HwQFrleVdQ/640?wx_fmt=png&amp;from=appmsg" alt="" loading="lazy" referrerpolicy="no-referrer"></figure>
+<p>一个 0.6B 的决策小模型 9 月 21 日开源，它不生成一个字，解码 token 为 0，2000 道测试题上答对 1585 道，比 Laya已发布的权重多 45 道，而且只用了对方八成的训练数据。</p>
+<p>候选一多优势更大，64 个选项时靠共享前缀 KV 把冗余主干 token 从 33547 压到 2551，比 Laya快约一倍，状态容量也是对方的两倍。权重、训练代码、推理服务、客户端全在 Apache-2.0 下开源，一次训练 841 秒，个人可以接着训练。</p>
 <p>AgentJev-0.6B 是我这两天最想拆的小模型。它是决策模型，不写句子，一次前向直接吐概率分布，解码出的 token 数是 0。</p>
 <h2>不写字，连 JSON 都不用修</h2>
-<p>![](https://mmbiz.qpic.cn/sz_mmbiz_png/XuxaLeADVkzN0vYiaD1ySubweFqp5cZYxY7fav5s8zXKvRd1icx7QLelRNELibnY4sV1Igh6ichUEawprxkSzH1ctT5aSR7rql3iabX6IDxgbZ0Q/640?wx_fmt=png&amp;from=appmsg)</p>
-<p>主干是 Qwen3-0.6B，语言模型头被摘掉。每个候选项读自己最后一个 token 的隐状态，再由一个与排列等变的小头给整组打分，  **</p>
-<p>选项的书写顺序不会偷偷变成名次  ** 。</p>
-<p>没有输出词表这件事，落到工程里就是三笔省下来的账。没有 JSON</p>
-<p>要解析，也没有格式坏掉重试那一轮，所以它不会输出一句自信的错话或者一个缺了括号的对象。失败方式从「解析不出来」变成「概率偏低」，而概率偏低是可以设阈值的。</p>
-<p>![AgentJev returning distributions for a state, against a model that writes</p>
-<p>the decision out token by</p>
-<p>token.](https://mmbiz.qpic.cn/mmbiz_gif/XuxaLeADVkxoaMfWb8R31UgQndrlPToefsOCg3hribPFwo0ia65dtACPgnQUGLwcceF0awicXyiaeOm38WaQDwSeHSRpdeoIZZIufN39oNAvtAQ/640?wx_fmt=gif&amp;from=appmsg)</p>
-<p>三种原语都把完整分布交出来，不只给赢家。  <strong> Boolean  </strong> 问命题真假，回传两个质量。  <strong> Choice  </strong> 给 2 到 255</p>
-<p>个选项，回传选中值、top 概率、前两名差值和整张分布。  <strong> Score  </strong> 给 2 到 10</p>
-<p>级评分表，回传等级和期望分，期望分可以落在两级之间。路由、阈值、回退这三种用法，靠的都是这张分布。</p>
-<p>上下文 2048 个 token，  <strong> 超长直接报错拒绝，不做静默截断  </strong> 。这条对闸门场景比对聊天场景重要得多，一段 diff</p>
-<p>被悄悄剪掉一半，返回的概率还挺好看，这种错最难查。</p>
+<figure><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/XuxaLeADVkzN0vYiaD1ySubweFqp5cZYxY7fav5s8zXKvRd1icx7QLelRNELibnY4sV1Igh6ichUEawprxkSzH1ctT5aSR7rql3iabX6IDxgbZ0Q/640?wx_fmt=png&amp;from=appmsg" alt="" loading="lazy" referrerpolicy="no-referrer"></figure>
+<p>主干是 Qwen3-0.6B，语言模型头被摘掉。每个候选项读自己最后一个 token 的隐状态，再由一个与排列等变的小头给整组打分， <strong>选项的书写顺序不会偷偷变成名次 </strong> 。</p>
+<p>没有输出词表这件事，落到工程里就是三笔省下来的账。没有 JSON要解析，也没有格式坏掉重试那一轮，所以它不会输出一句自信的错话或者一个缺了括号的对象。失败方式从「解析不出来」变成「概率偏低」，而概率偏低是可以设阈值的。</p>
+<figure><img src="https://mmbiz.qpic.cn/mmbiz_gif/XuxaLeADVkxoaMfWb8R31UgQndrlPToefsOCg3hribPFwo0ia65dtACPgnQUGLwcceF0awicXyiaeOm38WaQDwSeHSRpdeoIZZIufN39oNAvtAQ/640?wx_fmt=gif&amp;from=appmsg" alt="AgentJev returning distributions for a state, against a model that writes the decision out token by token." loading="lazy" referrerpolicy="no-referrer"><figcaption>AgentJev returning distributions for a state, against a model that writes the decision out token by token.</figcaption></figure>
+<p>三种原语都把完整分布交出来，不只给赢家。 <strong> Boolean </strong> 问命题真假，回传两个质量。 <strong> Choice </strong> 给 2 到 255个选项，回传选中值、top 概率、前两名差值和整张分布。 <strong> Score </strong> 给 2 到 10级评分表，回传等级和期望分，期望分可以落在两级之间。路由、阈值、回退这三种用法，靠的都是这张分布。</p>
+<p>上下文 2048 个 token， <strong> 超长直接报错拒绝，不做静默截断 </strong> 。这条对闸门场景比对聊天场景重要得多，一段 diff被悄悄剪掉一半，返回的概率还挺好看，这种错最难查。</p>
 <p>生成式模型答选择题像让考生把解题过程写满再交卷，你回头还得从字迹里认答案。AgentJev 直接读答题卡。</p>
 <h2>分更高，用的数据还少两成</h2>
-<p>模型  |  类型  |  Top-1  |  参数量</p>
-<p>---|---|---|---</p>
-<p>AgentJev-0.6B，本轮  |  专用  |  <strong> 79.25%  </strong> · 1585/2000  |  598M</p>
-<p>Laya 已发布权重  |  专用  |  77.00% · 1540/2000  |  421M</p>
-<p>meraGPT Decider 1  |  通用，零样本  |  76.8%  |  未公开</p>
-<p>TypeSafe Jev 1.13.0  |  通用，零样本  |  72.7%  |  未公开</p>
-<p>2000 道题里多答对 45 道。领先不是复跑方式造出来的，77.00% 是 AgentJev 复跑 Laya 已发布权重量出来的，Laya</p>
-<p>自己在模型卡上写的是 0.766，复跑的 Brier 0.0615 对 0.062，ECE 0.217 对 0.213，score MAE 0.2423 对</p>
-<p>0.242，三组贴着，  <strong> 复跑口径没动手脚，这份领先站得住。  </strong></p>
-<p>它是在数据更少的情况下赢的。Laya 用了全部 1200 个官方训练案例，AgentJev 留出 120 个开发加 120</p>
-<p>个校准案例，按开发集软交叉熵挑出第 600 步才打开测试集。  <strong> 少用两成数据，仍然高 2.25 个百分点  </strong> ，按 400 个案例做</p>
-<p>bootstrap，95% 区间是正 0.65 到正 3.90，下界没跨过零。</p>
+<p>模型 | 类型 | Top-1 | 参数量---|---|---|--- AgentJev-0.6B，本轮 | 专用 | <strong> 79.25% </strong> · 1585/2000 | 598M Laya 已发布权重 | 专用 | 77.00% · 1540/2000 | 421M meraGPT Decider 1 | 通用，零样本 | 76.8% | 未公开TypeSafe Jev 1.13.0 | 通用，零样本 | 72.7% | 未公开</p>
+<p>2000 道题里多答对 45 道。领先不是复跑方式造出来的，77.00% 是 AgentJev 复跑 Laya 已发布权重量出来的，Laya自己在模型卡上写的是 0.766，复跑的 Brier 0.0615 对 0.062，ECE 0.217 对 0.213，score MAE 0.2423 对0.242，三组贴着， <strong> 复跑口径没动手脚，这份领先站得住。 </strong></p>
+<p>它是在数据更少的情况下赢的。Laya 用了全部 1200 个官方训练案例，AgentJev 留出 120 个开发加 120个校准案例，按开发集软交叉熵挑出第 600 步才打开测试集。 <strong> 少用两成数据，仍然高 2.25 个百分点 </strong> ，按 400 个案例做bootstrap，95% 区间是正 0.65 到正 3.90，下界没跨过零。</p>
 <p>工作流分项里，两块最大的它都赢了。</p>
-<p>工作流  |  AgentJev  |  Laya</p>
-<p>---|---|---</p>
-<p>发票处理  |  <strong> 86.20%  </strong> |  81.20%</p>
-<p>客服  |  <strong> 82.20%  </strong> |  76.40%</p>
-<p>安全事件  |  76.80%  |  <strong> 77.60%  </strong></p>
-<p>agent 轨迹可观测性  |  71.80%  |  <strong> 72.80%  </strong></p>
+<p>工作流 | AgentJev | Laya ---|---|---发票处理 | <strong> 86.20% </strong> | 81.20%客服 | <strong> 82.20% </strong> | 76.40%安全事件 | 76.80% | <strong> 77.60% </strong> agent 轨迹可观测性 | 71.80% | <strong> 72.80% </strong></p>
 <p>校准这一栏它也是表里最好的。</p>
-<p>指标，越低越好  |  AgentJev  |  Laya  |  参照</p>
-<p>---|---|---|---</p>
-<p>Brier  |  <strong> 0.0448  </strong> |  0.0615  |  0.148，TypeSafe Jev 1.13.0</p>
-<p>Score MAE  |  <strong> 0.2096  </strong> |  0.2423  |  0.391，TypeSafe Jev 1.13.0</p>
-<p>ECE  |  0.1687  |  0.2170  |  0.144，Jev；0.088，Prior</p>
-<p>Brier 和 score MAE 两项全场最低。它的三个原语各带一个正的温度标量，在校准集上重新拟合过，Boolean 用 180 题，Choice 用</p>
-<p>180 题，Score 用 240 题。Laya</p>
-<p>的模型卡承认那份温度是从基础权重继承的，没有为这个模型重调，这一栏的差距有一部分来自这层施工量，不是白捡的。</p>
+<p>指标，越低越好 | AgentJev | Laya | 参照---|---|---|--- Brier | <strong> 0.0448 </strong> | 0.0615 | 0.148，TypeSafe Jev 1.13.0 Score MAE | <strong> 0.2096 </strong> | 0.2423 | 0.391，TypeSafe Jev 1.13.0 ECE | 0.1687 | 0.2170 | 0.144，Jev；0.088，Prior</p>
+<p>Brier 和 score MAE 两项全场最低。它的三个原语各带一个正的温度标量，在校准集上重新拟合过，Boolean 用 180 题，Choice 用180 题，Score 用 240 题。Laya的模型卡承认那份温度是从基础权重继承的，没有为这个模型重调，这一栏的差距有一部分来自这层施工量，不是白捡的。</p>
 <h2>候选一多，差距才真正拉开</h2>
 <p>这是它最实在的一处优势，而且限制条件是对手自己写在模型卡上的。</p>
-<p>负载  |  Laya，421M  |  AgentJev，598M</p>
-<p>---|---|---</p>
-<p>单案 P50，1 段状态 5 道题  |  <strong> 41.53 ms  </strong> |  约 60 到 70 ms</p>
-<p>宽候选，64 个 Choice 加 1 个 Boolean  |  约 500 到 600 ms  |  <strong> 298.91 ms  </strong></p>
-<p>上下文上限  |  1,024 token  |  <strong> 2,048 token  </strong></p>
-<p>Laya 选项共享固定 256 个 token 的额度，官方建议 Choice 保持在 20 个以内，  ** 选项一多，每个标签摊不到几个</p>
-<p>token，准确率掉得很快  ** 。它的主干是双向编码器，没有因果前缀那道接缝，一个问题给 64 个选项，状态文本就要被完整前向 64 次。</p>
-<p>![](https://mmbiz.qpic.cn/sz_mmbiz_gif/XuxaLeADVkxkgeAhbc2ouELUGu3CykWv6jjYClbbL4Ravj7CzicgYWIN0hVKWeiblvcZvaGonvkhMMQEfolHPMFTTP6m2MCC60257Dupz3LbQ/640?wx_fmt=gif&amp;from=appmsg)</p>
-<p>agentJev 这边 Choice 支持 2 到 255 个选项，每个候选项读自己最后一个 token 的隐状态，所有分支挂同一份 KV</p>
-<p>前缀上打分，冗余主干 token 计算从 33547 降到 2551，少了 92.4%。同一份负载预热后测的中位数，非共享前缀 609.65 ms，共享前缀</p>
-<p>298.91 ms，  <strong> 快约一倍，而两条路的概率最大差 0.000508，选中的选项没变  </strong></p>
-<p>。作者自己标了一句，这是这份负载上的数，不是对所有提示词的承诺。</p>
-<p>动作空间越大，它越划算  。选项表如果常年超过 30 个，这一条比准确率那 2.25 个点更值钱，反过来，一小段文本配几道题的短输入场景，Laya 快约</p>
-<p>20 毫秒，优势只在候选多的时候成立。</p>
+<p>负载 | Laya，421M | AgentJev，598M ---|---|---单案 P50，1 段状态 5 道题 | <strong> 41.53 ms </strong> | 约 60 到 70 ms宽候选，64 个 Choice 加 1 个 Boolean | 约 500 到 600 ms | <strong> 298.91 ms </strong>上下文上限 | 1,024 token | <strong> 2,048 token </strong></p>
+<p>Laya 选项共享固定 256 个 token 的额度，官方建议 Choice 保持在 20 个以内， <strong> 选项一多，每个标签摊不到几个token，准确率掉得很快 </strong> 。它的主干是双向编码器，没有因果前缀那道接缝，一个问题给 64 个选项，状态文本就要被完整前向 64 次。</p>
+<figure><img src="https://mmbiz.qpic.cn/sz_mmbiz_gif/XuxaLeADVkxkgeAhbc2ouELUGu3CykWv6jjYClbbL4Ravj7CzicgYWIN0hVKWeiblvcZvaGonvkhMMQEfolHPMFTTP6m2MCC60257Dupz3LbQ/640?wx_fmt=gif&amp;from=appmsg" alt="" loading="lazy" referrerpolicy="no-referrer"></figure>
+<p>agentJev 这边 Choice 支持 2 到 255 个选项，每个候选项读自己最后一个 token 的隐状态，所有分支挂同一份 KV前缀上打分，冗余主干 token 计算从 33547 降到 2551，少了 92.4%。同一份负载预热后测的中位数，非共享前缀 609.65 ms，共享前缀298.91 ms， <strong> 快约一倍，而两条路的概率最大差 0.000508，选中的选项没变 </strong> 。作者自己标了一句，这是这份负载上的数，不是对所有提示词的承诺。</p>
+<p>动作空间越大，它越划算 。选项表如果常年超过 30 个，这一条比准确率那 2.25 个点更值钱，反过来，一小段文本配几道题的短输入场景，Laya 快约20 毫秒，优势只在候选多的时候成立。</p>
 <h2>全栈开源，841 秒能自己重训</h2>
-<p>![](https://mmbiz.qpic.cn/mmbiz_png/XuxaLeADVkwLOxmzxLdx2E8UCqQ646hK66O7rzS645WUiczf9kTficERtXDZ9r2iawodp9AicOYIBZ5sbLV3JPUGlGicKQibsuzoIiaDeoafZpfzaM/640?wx_fmt=png&amp;from=appmsg)</p>
-<p>权重在 HuggingFace 的 aimeigaoshou/agent-jev，Apache-2.0，598M 参数全是 bf16，约</p>
-<p>1.2GB。仓库里除了权重和主干，还有训练入口、推理服务、客户端和一个现成的钩子，训练种子 20260921 和数据版本号都写在报告里，这一轮训练只花了</p>
-<p>841 秒。换成自己的业务数据重训，成本是一杯咖啡的时间，这跟按 token 计费的闭源接口不是一个玩法。</p>
-<p>跑起来五步。克隆仓库建 venv，装 requirements.txt 再补 huggingface_hub 和 safetensors；拉</p>
-<p>model.safetensors 和</p>
-<p>temperatures.json；这个文件是完整模块，主干加候选头，不是因果语言模型，AutoModelForCausalLM 载不动，得用 bf16</p>
-<p>载进来包成 state_dict 存成 .pt。</p>
-<p>from huggingface_hub import hf_hub_download</p>
-<p>from safetensors.torch import load_file</p>
-<p>import torch</p>
-<p>src = hf_hub_download(&quot;aimeigaoshou/agent-jev&quot;, &quot;model.safetensors&quot;)</p>
-<p>torch.save({&quot;state_dict&quot;: load_file(src)}, &quot;agentjev_v1.pt&quot;)</p>
-<p>hf_hub_download(&quot;aimeigaoshou/agent-jev&quot;, &quot;temperatures.json&quot;, local_dir=&quot;.&quot;)</p>
+<figure><img src="https://mmbiz.qpic.cn/mmbiz_png/XuxaLeADVkwLOxmzxLdx2E8UCqQ646hK66O7rzS645WUiczf9kTficERtXDZ9r2iawodp9AicOYIBZ5sbLV3JPUGlGicKQibsuzoIiaDeoafZpfzaM/640?wx_fmt=png&amp;from=appmsg" alt="" loading="lazy" referrerpolicy="no-referrer"></figure>
+<p>权重在 HuggingFace 的 aimeigaoshou/agent-jev，Apache-2.0，598M 参数全是 bf16，约1.2GB。仓库里除了权重和主干，还有训练入口、推理服务、客户端和一个现成的钩子，训练种子 20260921 和数据版本号都写在报告里，这一轮训练只花了841 秒。换成自己的业务数据重训，成本是一杯咖啡的时间，这跟按 token 计费的闭源接口不是一个玩法。</p>
+<p>跑起来五步。克隆仓库建 venv，装 requirements.txt 再补 huggingface_hub 和 safetensors；拉model.safetensors 和temperatures.json；这个文件是完整模块，主干加候选头，不是因果语言模型，AutoModelForCausalLM 载不动，得用 bf16载进来包成 state_dict 存成 .pt。</p>
+<p>from huggingface_hub import hf_hub_download from safetensors.torch import load_file import torch</p>
+<p>src = hf_hub_download(&quot;aimeigaoshou/agent-jev&quot;, &quot;model.safetensors&quot;) torch.save({&quot;state_dict&quot;: load_file(src)}, &quot;agentjev_v1.pt&quot;) hf_hub_download(&quot;aimeigaoshou/agent-jev&quot;, &quot;temperatures.json&quot;, local_dir=&quot;.&quot;)</p>
 <p>然后起服务。</p>
-<p>python -m jev_service.server \</p>
-<p>--checkpoint agentjev_v1.pt \</p>
-<p>--model-path Qwen/Qwen3-0.6B \</p>
-<p>--temperatures temperatures.json \</p>
-<p>--port 8149</p>
-<p>服务只绑 127.0.0.1，设备默认  <code> cuda:0  </code> ，8149 端口有本地工作台可以点着试，数据一步都不出机器。HTTP 层一次能吃 32</p>
-<p>个状态、128 个问题、1024 条候选路径。</p>
-<p>仓库里那个 agentjev_hook.py 是 Claude Code 的 PreToolUse 钩子，盯着 Bash、Write、Edit，问一个</p>
-<p>Boolean 和一个四级 Score，  <strong> 只有 Score 落在第 3 级并且 Boolean 说不安全，才拦下来  </strong> 。它是 fail-</p>
-<p>open 的，服务没响应就退出 0，工具照跑，掉线不阻断你的 agent。</p>
+<p>python -m jev_service.server \ --checkpoint agentjev_v1.pt \ --model-path Qwen/Qwen3-0.6B \ --temperatures temperatures.json \ --port 8149</p>
+<p>服务只绑 127.0.0.1，设备默认 <code> cuda:0 </code> ，8149 端口有本地工作台可以点着试，数据一步都不出机器。HTTP 层一次能吃 32个状态、128 个问题、1024 条候选路径。</p>
+<p>仓库里那个 agentjev_hook.py 是 Claude Code 的 PreToolUse 钩子，盯着 Bash、Write、Edit，问一个Boolean 和一个四级 Score， <strong> 只有 Score 落在第 3 级并且 Boolean 说不安全，才拦下来 </strong> 。它是 fail- open 的，服务没响应就退出 0，工具照跑，掉线不阻断你的 agent。</p>
 <h2>怎么用AgentJev-0.6B和不能吹的地方</h2>
-<p>![](https://mmbiz.qpic.cn/sz_mmbiz_png/XuxaLeADVkzT6xbhgBKZONuoyS4jIIkspgNGaPorUaAGgVYz5loZiaAGL2Aof2BgavuNaJcIvTL00ZJekic9AIJUpA4Hg4r6gdy3c0QAlqRQU/640?wx_fmt=png&amp;from=appmsg)</p>
-<p>先起服务，从自己的 agent 日志里挑 50 条状态，配上 3 到 5</p>
-<p>道平时靠正则或者小分类器在挡的判断题，看它给出的分布长什么样。再把正确答案和概率对一遍，找出在错误率容忍度内置信度切在哪一段最划算，放行的那批留下来当校准集。</p>
-<p>正在用 27B 以上模型做路由和闸门的，这 1.2GB 值得在 GPU 上占个角落，  <strong> 候选经常超过 30 个的场景尤其划算  </strong></p>
-<p>，想要读懂长上下文、给建议、写文案，它一个字都帮不上。</p>
-<p>它只认发票处理、客服、安全事件、agent 轨迹这四类工作流  ，换个领域要么重训要么别用，隔壁 Laya 那边社区已经做出</p>
-<p>GGUF、MLX、ONNX、CoreML 几套转换，AgentJev-0.6B暂时还没有。</p>
+<figure><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/XuxaLeADVkzT6xbhgBKZONuoyS4jIIkspgNGaPorUaAGgVYz5loZiaAGL2Aof2BgavuNaJcIvTL00ZJekic9AIJUpA4Hg4r6gdy3c0QAlqRQU/640?wx_fmt=png&amp;from=appmsg" alt="" loading="lazy" referrerpolicy="no-referrer"></figure>
+<p>先起服务，从自己的 agent 日志里挑 50 条状态，配上 3 到 5道平时靠正则或者小分类器在挡的判断题，看它给出的分布长什么样。再把正确答案和概率对一遍，找出在错误率容忍度内置信度切在哪一段最划算，放行的那批留下来当校准集。</p>
+<p>正在用 27B 以上模型做路由和闸门的，这 1.2GB 值得在 GPU 上占个角落， <strong> 候选经常超过 30 个的场景尤其划算 </strong> ，想要读懂长上下文、给建议、写文案，它一个字都帮不上。</p>
+<p>它只认发票处理、客服、安全事件、agent 轨迹这四类工作流 ，换个领域要么重训要么别用，隔壁 Laya 那边社区已经做出GGUF、MLX、ONNX、CoreML 几套转换，AgentJev-0.6B暂时还没有。</p>
 <p>预览时标签不可点</p>
 <p>不喜欢</p>
-<p>微信扫一扫</p>
-<p>关注该公众号</p>
+<p>微信扫一扫关注该公众号</p>
 <p>知道了</p>
-<p>微信扫一扫</p>
-<p>使用小程序</p>
+<p>微信扫一扫使用小程序</p>
 <hr>
-<p>取消  允许</p>
+<p>取消 允许</p>
 <hr>
-<p>取消  允许</p>
+<p>取消 允许</p>
 <hr>
-<p>取消  允许</p>
-<p>×  分析</p>
-<p>__</p>
-<p>!<a href="http://mmbiz.qpic.cn/mmbiz_png/XuxaLeADVkwIvEUqVC6fmoz9yuRbtAlrd1UYiaCqMQ0gfwyticLgpT0neyWt30QFKuZibC5KiaXJDdTepoRiauicp65xaiaxdW9VicMewsRyn2gtrOA/0?wx_fmt=png">作者头像</a></p>
-<p>微信扫一扫可打开此内容，</p>
-<p>使用完整服务</p>
-<p>：  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  。  视频  小程序  赞  ，轻点两下取消赞  在看  ，轻点两下取消在看</p>
-<p>分享  留言  收藏  听过</p>
-<footer>生成于 2026-10-25 20:57 · build_site.py</footer>
+<p>取消 允许</p>
+<p>× 分析</p>
+<figure><img src="http://mmbiz.qpic.cn/mmbiz_png/XuxaLeADVkwIvEUqVC6fmoz9yuRbtAlrd1UYiaCqMQ0gfwyticLgpT0neyWt30QFKuZibC5KiaXJDdTepoRiauicp65xaiaxdW9VicMewsRyn2gtrOA/0?wx_fmt=png" alt="作者头像" loading="lazy" referrerpolicy="no-referrer"><figcaption>作者头像</figcaption></figure>
+<p>微信扫一扫可打开此内容，使用完整服务</p>
+<p>： ， ， ， ， ， ， ， ， ， ， ， ， 。 视频 小程序 赞 ，轻点两下取消赞 在看 ，轻点两下取消在看分享 留言 收藏 听过</p></div>
+<footer>生成于 2026-10-25 21:43 · build_site.py</footer>
 </div></body></html>

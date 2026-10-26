@@ -7,66 +7,60 @@
 <header class="site"><div class="title"><a href="../index.html">微信数字资产库 · 分析站</a> · <a href="../articles/index.html">📄 公众号</a> · <a href="../private/index.html">🔒 私聊区</a></div>
 <div class="sub">由本地 vault 生成 · raw 层永不上云</div></header>
 <div class="crumbs"><a href="../index.html">首页</a> / 公众号 / 2026-10-25</div>
-<h1>把 3000 个 API 打包进 CLI，Cloudflare 这个赛博菩萨进化得有点猛</h1>
-<p>原创  艾康在路上  艾康在路上  艾康的AI自留地</p>
-<p>_2026年09月30日 20:00_ __ _ _ _ _ _ 广东  _</p>
-<p>在小说阅读器读本章</p>
-<p>去阅读</p>
-<p>见字如面，我是艾康。  <strong> 点击关注  </strong> 👆防止迷路。  <strong> </strong></p>
+<div class="article"><h1>把 3000 个 API 打包进 CLI，Cloudflare 这个赛博菩萨进化得有点猛</h1>
+<p>见字如面，我是艾康。 <strong> 点击关注 </strong> 👆防止迷路。 <strong> </strong></p>
 <p>本文字数 3868，阅读大约需 8 分钟</p>
 <p>提起 Cloudflare，大家脑海里的第一印象是什么？</p>
 <p>是用来买个域名拿来托管 DNS 解析？还是拿来防攻击、防扫描？</p>
-<p><strong> 在很多开发者圈子里，大家更习惯亲切地称它为「赛博菩萨」或「互联网大善人」。  </strong></p>
-<p>原因很简单，因为它提供的海量基础设施，不管是网站部署、边缘数据库、免费 SSL 证书等等，全部都提供了极其慷慨的免费额度，  **</p>
-<p>日常折腾完全不用花一分钱，不用担心账单刺客🥷  ** 。</p>
+<p><strong> 在很多开发者圈子里，大家更习惯亲切地称它为「赛博菩萨」或「互联网大善人」。 </strong></p>
+<p>原因很简单，因为它提供的海量基础设施，不管是网站部署、边缘数据库、免费 SSL 证书等等，全部都提供了极其慷慨的免费额度， <strong>日常折腾完全不用花一分钱，不用担心账单刺客🥷 </strong> 。</p>
 <p>但很多人（包括我自己）以前其实都被 Cloudflare 的网页控制台劝退过：成百上千个英文菜单层层嵌套，各种专业名词看得人眼花缭乱。</p>
 <p>每次想要改个设置或开个服务，得在控制台里翻半天文档。</p>
-<p>但就在前两天，  <strong> Cloudflare 官方全量上线了一个全新的命令行工具，叫  </strong> <strong><code> cf  </code> </strong> <strong> 。  </strong></p>
-<p>!<a href="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDOerJcAYtdTVBrqKEicX0FkKPHnyg5uNzRh91Sju8uO9GbZQxedZicpNiac2yj7ZVN3IODl5JU6YibpYibfIDiaMraIzt3kribgDibtrfk/640?wx_fmt=png&amp;from=appmsg">img</a></p>
-<p>_ Github 地址：  _ https://  github.com/  cloudflare/  cf</p>
-<p>它把整个 Cloudflare 平台涵盖计算、存储、网络、AI、安全在内的  ** 3,000 多个 API 操作，全部打包进了一个小巧的命令行工具里</p>
-<p>** 。</p>
+<p>但就在前两天， <strong> Cloudflare 官方全量上线了一个全新的命令行工具，叫 </strong> <strong><code> cf </code> </strong> <strong> 。 </strong></p>
+<figure><img src="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDOerJcAYtdTVBrqKEicX0FkKPHnyg5uNzRh91Sju8uO9GbZQxedZicpNiac2yj7ZVN3IODl5JU6YibpYibfIDiaMraIzt3kribgDibtrfk/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
+<p>_ Github 地址： _ https:// github.com/ cloudflare/ cf</p>
+<p>它把整个 Cloudflare 平台涵盖计算、存储、网络、AI、安全在内的 <strong> 3,000 多个 API 操作，全部打包进了一个小巧的命令行工具里</strong> 。</p>
 <p>哪怕你手头上没有任何 Cloudflare 的项目，甚至之前都没有听说过它，也没有关系。</p>
 <p>我觉得看完这篇文章，你也能马上把这个工具给用起来。</p>
 <h2>零门槛安装与登录</h2>
-<p>在正式开始之前，有一个前置准备需要提一下：  <strong> 你需要先有一个 Cloudflare 账号  </strong> 。</p>
-<p>如果你之前从来没用过，可以先去官网（dash.cloudflare.com/  sign-up）花一分钟免费注册一个。</p>
-<p><strong> 只需要填个邮箱和密码即可，不需要绑定任何信用卡，对新手来说也是没什么门槛。  </strong></p>
+<p>在正式开始之前，有一个前置准备需要提一下： <strong> 你需要先有一个 Cloudflare 账号 </strong> 。</p>
+<p>如果你之前从来没用过，可以先去官网（dash.cloudflare.com/ sign-up）花一分钟免费注册一个。</p>
+<p><strong> 只需要填个邮箱和密码即可，不需要绑定任何信用卡，对新手来说也是没什么门槛。 </strong></p>
 <p>有了账号之后，电脑里只要有 Node.js 环境（建议 v20 或 v22 以上版本），就可以直接上手了。</p>
 <p>打开终端（Windows 的话，可以使用 CMD 或 PowerShell），直接一行命令全局安装👇</p>
 <p>bash</p>
-<p>npm i -g cf</p>
-<p>!<a href="https://mmbiz.qpic.cn/sz_mmbiz_png/VUgY76U7icDMoUFQIOldoVf1zVOjAA3mp5t0rYw7licbjxZHOic8icMbjIaBfggxzzGQfgN0SibUvnJ0JIUcu0qhVDrXydmVBicboL3nA58cKMzPU/640?wx_fmt=png&amp;from=appmsg">img</a></p>
-<p>安装完成后，输入  <code> cf --version  </code> 查看版本：</p>
+<p>npm i -g cf</p>
+<figure><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/VUgY76U7icDMoUFQIOldoVf1zVOjAA3mp5t0rYw7licbjxZHOic8icMbjIaBfggxzzGQfgN0SibUvnJ0JIUcu0qhVDrXydmVBicboL3nA58cKMzPU/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
+<p>安装完成后，输入 <code> cf --version </code> 查看版本：</p>
 <p>bash</p>
-<p>cf --version</p>
+<p>cf --version</p>
 <p>如果你看到终端跳出了一朵小橙子和小云朵的图标，就说明安装成功了：</p>
-<p>!<a href="https://mmbiz.qpic.cn/sz_mmbiz_png/VUgY76U7icDP3cshIYbPa9kIn1tibAKEpric99eqwnc203dicHgrAfIDxMUmUTcmZWgia3Y3B2m1WNasoAX9uOGTascYlOXl3QicDy5HaibCbzCicK4/640?wx_fmt=png&amp;from=appmsg">img</a></p>
+<figure><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/VUgY76U7icDP3cshIYbPa9kIn1tibAKEpric99eqwnc203dicHgrAfIDxMUmUTcmZWgia3Y3B2m1WNasoAX9uOGTascYlOXl3QicDy5HaibCbzCicK4/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
 <p>接下来是登录鉴权。</p>
 <p>以前使用类似的云工具，比较烦的就是去后台到处找 API Token，然后再复制粘贴回终端。</p>
-<p>而在  <code> cf  </code> 里，登录体验变得非常现代：</p>
+<p>而在 <code> cf </code> 里，登录体验变得非常现代：</p>
 <p>bash</p>
-<p>cf auth login</p>
+<p>cf auth login</p>
 <p>敲下这行命令后，终端会自动采用设备码授权流程。它会直接在终端打印一个验证链接，并自动在浏览器中打开授权页。</p>
-<p>!<a href="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDPiaNich1XZqfgSGiauiaEye52g5d9mbgqCtGGBIzh2r8VXj668gTpFLH9xkCMpuk4kKj0I3XHqzXgle1lmmiaylgicA3FE05jcT9v04/640?wx_fmt=png&amp;from=appmsg">img</a></p>
+<figure><img src="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDPiaNich1XZqfgSGiauiaEye52g5d9mbgqCtGGBIzh2r8VXj668gTpFLH9xkCMpuk4kKj0I3XHqzXgle1lmmiaylgicA3FE05jcT9v04/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
 <p>你只需要在网页上核对一下设备码，没有问题，就点击一下「确认授权」，终端就会显示授权完成。</p>
-<p>!<a href="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDMmrZpeFUEHCibVPrEPqfgibmCTpHcrB0XU42URCJrK525I2kCQxjTMTbHGbx81icsdic610UWCpuviben7arhgWnZHPXks3vdbwQmU/640?wx_fmt=png&amp;from=appmsg">img</a></p>
+<figure><img src="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDMmrZpeFUEHCibVPrEPqfgibmCTpHcrB0XU42URCJrK525I2kCQxjTMTbHGbx81icsdic610UWCpuviben7arhgWnZHPXks3vdbwQmU/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
 <p>接着可以在终端输入这行命令验证一下：</p>
 <p>bash</p>
-<p>cf auth whoami</p>
+<p>cf auth whoami</p>
 <p>你会看到终端整整齐齐地列出了当前已授权的全部账号权限。</p>
 <p>到这里，准备工作就彻底做好了。</p>
 <p>对了， 因为 CF 默认会向官方匿名发送命令执行的频次和 search 搜索词。</p>
-<p>如果你比较在意隐私、在意终端环境的纯净，可以在终端配置文件（如  <code> ~/.zshrc  </code> 或  <code> ~/.bashrc  </code> ）加上一行配置：</p>
+<p>如果你比较在意隐私、在意终端环境的纯净，可以在终端配置文件（如 <code> ~/.zshrc </code> 或 <code> ~/.bashrc </code> ）加上一行配置：</p>
 <p>bash</p>
-<p>export DO_NOT_TRACK=1</p>
+<p>export DO_NOT_TRACK=1</p>
 <p>保存之后重新打开，这样匿名遥测就会被静默关闭。</p>
 <p>下面这 5 个玩法，全部是可以直接上手的场景。无论你是写前端、做独立开发，还是平时会给自己做一些小工具，都能立刻用上。</p>
 <h2>玩法一：一行命令，把本地项目临时变成公网网站</h2>
 <p>自从有了 AI Agent 之后，基本上等同于实现了代码自由。</p>
-<p><strong> 只要有想法、有灵感，就能言出法随，在本地做出各种各样好玩的小工具。  </strong></p>
+<p><strong> 只要有想法、有灵感，就能言出法随，在本地做出各种各样好玩的小工具。 </strong></p>
 <p>但很多时候，痛点在于这个工具做好了只能在自己的电脑上用。</p>
-<p>你会发现把  <code> http://localhost:4000  </code> 这样的链接直接发给朋友，他是根本打不开的。</p>
+<p>你会发现把 <code> http://localhost:4000 </code> 这样的链接直接发给朋友，他是根本打不开的。</p>
 <p>这时候，我们就需要让外部的网络或者手机也能直接访问到本地电脑上的服务。</p>
 <p>通常有多种方式：</p>
 <p>可以是部署上线，也就是把代码打包上传到远端的云服务器上，24 小时在云端运行。你把笔记本电脑合上、关机，别人依然能访问。</p>
@@ -74,67 +68,61 @@
 <p>Cloudflare 只是临时在公网和你的本地端口之间架了一条安全的加密管道。</p>
 <p>所以，如果你只是想让你的朋友临时访问你的网站，就只需要打开终端，执行这条命令：</p>
 <p>bash</p>
-<p>cf tunnels quick-start http://localhost:4000</p>
-<p>后面的  <code> http://localhost:4000  </code> 地址换成你自己本地对应在跑的服务和端口。</p>
+<p>cf tunnels quick-start http://localhost:4000</p>
+<p>后面的 <code> http://localhost:4000 </code> 地址换成你自己本地对应在跑的服务和端口。</p>
 <p>第一次在终端运行这个命令会稍微等一下，因为 Cloudflare 会在后台静默下载独立的穿透组件，所以看到终端稍有停顿是正常的。</p>
 <p>等待几秒组件就绪后，终端就会输出一段信息，其中包含一个专属的临时公网域名：</p>
 <p>https://xxxx-xxxx-xxxx.trycloudflare.com</p>
-<p>!<a href="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDOFEgxsJuibFQmoMxTeXpicSzrjDficG7UzlPcCXL93b7fVaBhMLtdCNXXibJ5jummMUibfjgHyH0xhpfclGenmvicl4LZ7VBeofKCfk/640?wx_fmt=png&amp;from=appmsg">img</a></p>
+<figure><img src="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDOFEgxsJuibFQmoMxTeXpicSzrjDficG7UzlPcCXL93b7fVaBhMLtdCNXXibJ5jummMUibfjgHyH0xhpfclGenmvicl4LZ7VBeofKCfk/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
 <p>点击这个域名，你就可以看到自己本地跑着的服务被正常打开了。</p>
-<p><strong> 同样地，当你把这个地址发给朋友，或者用手机浏览器访问，依然可以秒级打开。  </strong></p>
-<p>!<a href="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDNeRIhjsYDvTSdhoXH4RMxEffDnMlic1UBCYiaMia2vEY8wmib39icbHZzRGicxaicGicDWU6vrBKGWAgicME4Gt0Lejlhia7j6Qb7JuQmAc/640?wx_fmt=png&amp;from=appmsg">img</a></p>
-<p>整个过程  <strong> 免买域名、免配 SSL 证书、免租云服务器  </strong> 。</p>
-<p>等你的演示或者测试结束了，在终端按一下  <code> Ctrl/Cmd+C  </code> 退出，通道立刻销毁，没有任何安全残留，体验极其丝滑。</p>
+<p><strong> 同样地，当你把这个地址发给朋友，或者用手机浏览器访问，依然可以秒级打开。 </strong></p>
+<figure><img src="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDNeRIhjsYDvTSdhoXH4RMxEffDnMlic1UBCYiaMia2vEY8wmib39icbHZzRGicxaicGicDWU6vrBKGWAgicME4Gt0Lejlhia7j6Qb7JuQmAc/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
+<p>整个过程 <strong> 免买域名、免配 SSL 证书、免租云服务器 </strong> 。</p>
+<p>等你的演示或者测试结束了，在终端按一下 <code> Ctrl/Cmd+C </code> 退出，通道立刻销毁，没有任何安全残留，体验极其丝滑。</p>
 <h2>玩法二：告别云服务器，静态网页 /前端项目秒上线</h2>
 <p>在上一个玩法里，我们提到了如何把本地的服务临时分享给朋友。</p>
 <p>但如果你的需求不止于此，不仅是想临时访问，甚至希望自己的电脑关掉之后这个服务仍然在。</p>
 <p>那这个时候，很多新手小白的第一反应就是：我是不是得去买一台云服务器，装一个 Nginx，还要配上对应的证书才行？</p>
-<p><strong> 其实对于纯前端和静态网页，根本不需要用到服务器。现在有了 CF，这一切相当简单。  </strong></p>
+<p><strong> 其实对于纯前端和静态网页，根本不需要用到服务器。现在有了 CF，这一切相当简单。 </strong></p>
 <p>最推荐、也最不容易踩坑的做法，是直接用官方脚手架初始化一个轻量项目：</p>
-<p><strong> 第一步：一行命令初始化项目并自动安装依赖  </strong></p>
+<p><strong> 第一步：一行命令初始化项目并自动安装依赖 </strong></p>
 <p>在终端输入：</p>
 <p>bash</p>
-<p>cf init my-site</p>
-<p>!<a href="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDMuiatmznchVzjxIujcd05IgFQYnMlnLmN00uict0DIItOOtHuCJQpeV1TjddFyQL75q8YxqKHXHHxxjGyiaibaPUd60W35fHqSulA/640?wx_fmt=png&amp;from=appmsg">img</a></p>
-<p>终端会询问使用哪个包管理器，直接按回车选  <code> npm  </code> 即可。</p>
-<p><code> cf  </code> 会全自动建好目录，并将底层构建所需的全部依赖一次性安装到位。</p>
-<p><strong> 第二步：放入你的网页，一键推向云端  </strong></p>
-<p>把你想上线的 HTML 单页文件（比如个人简历、数据大屏、活动主页等）重命名为  <code> index.html  </code> ，直接复制进  <code> my-site  </code></p>
-<p>目录中替换默认页面。</p>
-<p>!<a href="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDOhqboNIvia3chlmia5ViaB0t982bR6yGBZjVfXgen0Q2qSGT76FeYsicHZsKnPJSpIVDs3iaXNlZ0AtZUAXeL4Wu3mRmZSnpCDojsk/640?wx_fmt=png&amp;from=appmsg">img</a></p>
+<p>cf init my-site</p>
+<figure><img src="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDMuiatmznchVzjxIujcd05IgFQYnMlnLmN00uict0DIItOOtHuCJQpeV1TjddFyQL75q8YxqKHXHHxxjGyiaibaPUd60W35fHqSulA/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
+<p>终端会询问使用哪个包管理器，直接按回车选 <code> npm </code> 即可。</p>
+<p><code> cf </code> 会全自动建好目录，并将底层构建所需的全部依赖一次性安装到位。</p>
+<p><strong> 第二步：放入你的网页，一键推向云端 </strong></p>
+<p>把你想上线的 HTML 单页文件（比如个人简历、数据大屏、活动主页等）重命名为 <code> index.html </code> ，直接复制进 <code> my-site </code>目录中替换默认页面。</p>
+<figure><img src="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDOhqboNIvia3chlmia5ViaB0t982bR6yGBZjVfXgen0Q2qSGT76FeYsicHZsKnPJSpIVDs3iaXNlZ0AtZUAXeL4Wu3mRmZSnpCDojsk/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
 <p>然后切进目录，敲下部署命令：</p>
 <p>bash</p>
-<p>cd my-site</p>
-<p>cf deploy</p>
-<p>!<a href="https://mmbiz.qpic.cn/sz_mmbiz_png/VUgY76U7icDMEcIEocHB9bWCALqNL4Hy1xYODkH7CImhlVwSE2EO134oG5nRphsfsb0yk3VfFHvA1Gs1hySwDCtxEemwXDKlSq9QFiaQdeqAc/640?wx_fmt=png&amp;from=appmsg">img</a></p>
-<p>如果你的 Cloudflare 账号是第一次部署 Worker 服务，终端会贴心地弹出一行提示，询问你是否要为账号注册一个专属的  `</p>
-<p>workers.dev  <code> 免费子域名（例如  </code> xxxxx.workers.dev  ` ）。</p>
-<p>选中  <code> Yes  </code> 并输入你喜欢的个性化名字即可，每个账号只需要设置这一次。</p>
+<p>cd my-site cf deploy</p>
+<figure><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/VUgY76U7icDMEcIEocHB9bWCALqNL4Hy1xYODkH7CImhlVwSE2EO134oG5nRphsfsb0yk3VfFHvA1Gs1hySwDCtxEemwXDKlSq9QFiaQdeqAc/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
+<p>如果你的 Cloudflare 账号是第一次部署 Worker 服务，终端会贴心地弹出一行提示，询问你是否要为账号注册一个专属的 <code> workers.dev </code> 免费子域名（例如 <code> xxxxx.workers.dev </code> ）。</p>
+<p>选中 <code> Yes </code> 并输入你喜欢的个性化名字即可，每个账号只需要设置这一次。</p>
 <p>直接按回车确认后，Cloudflare 会在几十秒内将你的所有页面和静态资源直接推送到云端。</p>
-<p>部署完成，终端会直接输出一个专属的在线网址（类似  <code> https://your-project.workers.dev  </code> ）。</p>
-<p>!<a href="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDPcNZzpwL5b7myicZave4AIj6UTP8F5MNVhCsBX89rEr2U046dmtunGXNgVD4U6c2a7K7u9ztRp0StH9KruvicN1gTe8iaBmlcvDk/640?wx_fmt=png&amp;from=appmsg">img</a></p>
-<p>从这一刻起，  <strong> 就算你把电脑关机了，这个网站依然在云端 24 小时稳定在线  </strong> 。</p>
-<p>由于它直接托管在 Cloudflare 遍布全球的边缘节点网络上，天生就自带了免费的 HTTPS 证书和 CDN</p>
-<p>就近加速，无论是国内还是海外的朋友访问，速度都非常流畅。</p>
-<p>最关键的是，对于个人小项目来说，  <strong> 完全是免费的  </strong> 。</p>
+<p>部署完成，终端会直接输出一个专属的在线网址（类似 <code> https://your-project.workers.dev </code> ）。</p>
+<figure><img src="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDPcNZzpwL5b7myicZave4AIj6UTP8F5MNVhCsBX89rEr2U046dmtunGXNgVD4U6c2a7K7u9ztRp0StH9KruvicN1gTe8iaBmlcvDk/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
+<p>从这一刻起， <strong> 就算你把电脑关机了，这个网站依然在云端 24 小时稳定在线 </strong> 。</p>
+<p>由于它直接托管在 Cloudflare 遍布全球的边缘节点网络上，天生就自带了免费的 HTTPS 证书和 CDN就近加速，无论是国内还是海外的朋友访问，速度都非常流畅。</p>
+<p>最关键的是，对于个人小项目来说， <strong> 完全是免费的 </strong> 。</p>
 <h2>玩法三：不用记命令的「意图搜索」</h2>
 <p>使用过 Cloudflare 的朋友都知道，其全平台的功能多达 3,000 多个。</p>
 <p>很多时候我们是很难记住一个具体的指令它叫什么。</p>
-<p>比如说，想要去备份或者创建数据库，那到底是敲  <code> cf d1 dump  </code> 、  <code> cf d1 backup  </code> 还是  ` cf d1</p>
-<p>create  ` ？</p>
+<p>比如说，想要去备份或者创建数据库，那到底是敲 <code> cf d1 dump </code> 、 <code> cf d1 backup </code> 还是 <code> cf d1 create </code> ？</p>
 <p>以前碰到这种情况，只能去翻几万字的英文官方文档，查半天还容易拼错参数。</p>
-<p>现在在  <code> cf  </code> 里，你根本不用背命令，直接在终端里向它搜索你的「意图」：</p>
+<p>现在在 <code> cf </code> 里，你根本不用背命令，直接在终端里向它搜索你的「意图」：</p>
 <p>bash</p>
-<p>cf cli search &quot;create database&quot;</p>
+<p>cf cli search &quot;create database&quot;</p>
 <p>它会毫秒级输出匹配度最高的前 5 个命令及其用法摘要：</p>
-<p>!<a href="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDN4bOpRia4FdIzCibVLOtiayGKm8rEVXfNglRtKIkFe69xqWFarBLRUV29MbIsic7AFUrkHDwTKDMNb1ZzLwTkBZ3LzIc4brN0DIWw/640?wx_fmt=png&amp;from=appmsg">img</a></p>
+<figure><img src="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDN4bOpRia4FdIzCibVLOtiayGKm8rEVXfNglRtKIkFe69xqWFarBLRUV29MbIsic7AFUrkHDwTKDMNb1ZzLwTkBZ3LzIc4brN0DIWw/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
 <p>我在本地测试时发现，因为底层内嵌的轻量搜索引擎（MiniSearch）索引的是 Cloudflare 官方英文文档与参数。</p>
-<p>所以如果你输入中文（例如  <code> cf cli search &quot;创建数据库&quot;  </code> ），会返回一个空列表  <code> []  </code> 。</p>
-<p>!<a href="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDMSTib1dU2I4Zsia6oPXkjArictss7WTnHsxicVHDVCiajibHvIwjk16SFrWo9loNP1VrB4t55yGFVOXYAzaPVITcDQmJp7MQlOvkyNg/640?wx_fmt=png&amp;from=appmsg">img</a></p>
+<p>所以如果你输入中文（例如 <code> cf cli search &quot;创建数据库&quot; </code> ），会返回一个空列表 <code> [] </code> 。</p>
+<figure><img src="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDMSTib1dU2I4Zsia6oPXkjArictss7WTnHsxicVHDVCiajibHvIwjk16SFrWo9loNP1VrB4t55yGFVOXYAzaPVITcDQmJp7MQlOvkyNg/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
 <p>但我觉得完全不用担心英文不好。</p>
-<p>因为  <code> cf  </code> 就是给 Agent 去使用的，所以很多时候我们只需要跟 Agent 说就好了。</p>
-<p>比如跟它说：「你需要帮我在 Cloudflare 上去建个数据库。」Agent 自己就会去后台执行  ` cf cli search &quot;create</p>
-<p>database&quot;  ` ，替你找到对应的命令并执行。</p>
+<p>因为 <code> cf </code> 就是给 Agent 去使用的，所以很多时候我们只需要跟 Agent 说就好了。</p>
+<p>比如跟它说：「你需要帮我在 Cloudflare 上去建个数据库。」Agent 自己就会去后台执行 <code> cf cli search &quot;create database&quot; </code> ，替你找到对应的命令并执行。</p>
 <h2>玩法四：零门槛拥有一个全球边缘数据库</h2>
 <p>以前写个记账小程序、全栈个人博客、或者写个小工具，比较头疼的就是配数据库。</p>
 <p>开云数据库觉得有点贵，本地 SQLite 部署到线上又没法持久化。</p>
@@ -142,96 +130,74 @@
 <p>不仅性能极快，而且免费额度非常充裕。</p>
 <p>以往建 D1 必须去网页后台点来点去，现在终端里几秒钟搞定：</p>
 <p>1、 一行命令秒级建库：</p>
-<p>注意，在全新的  <code> cf  </code> 中，建库需要使用  <code> --name  </code> 参数：</p>
+<p>注意，在全新的 <code> cf </code> 中，建库需要使用 <code> --name </code> 参数：</p>
 <p>bash</p>
-<p>cf d1 create --name my-db</p>
-<p>!<a href="https://mmbiz.qpic.cn/sz_mmbiz_png/VUgY76U7icDPiaQx8f1VOiavqdjneOj0x0H3UQHibLvereNIYBEia6xT3cpFATm6DccibDLBlKhmibkGO6nKGCrpgOGiba8SAaElehOVicxRPLUcCVQg/640?wx_fmt=png&amp;from=appmsg">img</a></p>
-<p>执行后，终端几秒钟就会返回这个数据库的详细元数据，其中会包含一个专属的  <code> uuid  </code> （数据库唯一标识）。</p>
+<p>cf d1 create --name my-db</p>
+<figure><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/VUgY76U7icDPiaQx8f1VOiavqdjneOj0x0H3UQHibLvereNIYBEia6xT3cpFATm6DccibDLBlKhmibkGO6nKGCrpgOGiba8SAaElehOVicxRPLUcCVQg/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
+<p>执行后，终端几秒钟就会返回这个数据库的详细元数据，其中会包含一个专属的 <code> uuid </code> （数据库唯一标识）。</p>
 <p>2、终端直接执行 SQL 建表与读写：</p>
 <p>你不需要在电脑上安装任何 Navicat、DBeaver 这类繁重的图形化客户端。直接在命令行里就能对云端数据库写入数据：</p>
 <p>bash</p>
-<p>cf d1 query &lt;你的数据库UUID&gt; --sql &quot;CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT);&quot;</p>
+<p>cf d1 query &lt;你的数据库UUID&gt; --sql &quot;CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT);&quot;</p>
 <p>表建好之后，插入一条数据测试一下：</p>
 <p>bash</p>
-<p>cf d1 query &lt;你的数据库UUID&gt; --sql &quot;INSERT INTO users (name) VALUES (&#x27;KK&#x27;);&quot;</p>
+<p>cf d1 query &lt;你的数据库UUID&gt; --sql &quot;INSERT INTO users (name) VALUES (&#x27;KK&#x27;);&quot;</p>
 <p>再查出来看看：</p>
 <p>bash</p>
-<p>cf d1 query &lt;你的数据库UUID&gt; --sql &quot;SELECT * FROM users;&quot;</p>
+<p>cf d1 query &lt;你的数据库UUID&gt; --sql &quot;SELECT * FROM users;&quot;</p>
 <p>终端会整整齐齐地把刚才存进去的数据以清晰的 JSON 格式输出出来。</p>
-<p>!<a href="https://mmbiz.qpic.cn/sz_mmbiz_png/VUgY76U7icDPibkZJmHGcGyXUGhUcWvJCQAzibtlvWosaZZnWsu1DfgEINQ1qS3iaLlo29jEfb2MpLLZP1Hy938ekQGWSJI76iajVb76LDfXSCyw/640?wx_fmt=png&amp;from=appmsg">img</a></p>
-<p>命令、参数太多记不住也没关系，  <code> cf  </code> 已经把全平台的 3,000 个命令完转换成一套符合 MCP 标准的工具描述 JSON。</p>
-<p><strong> Cloudflare 在设计  </strong> <strong><code> cf  </code> </strong> <strong> 这个命令行工具时，就已经把 Agent 视作了一等公民。  </strong></p>
+<figure><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/VUgY76U7icDPibkZJmHGcGyXUGhUcWvJCQAzibtlvWosaZZnWsu1DfgEINQ1qS3iaLlo29jEfb2MpLLZP1Hy938ekQGWSJI76iajVb76LDfXSCyw/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
+<p>命令、参数太多记不住也没关系， <code> cf </code> 已经把全平台的 3,000 个命令完转换成一套符合 MCP 标准的工具描述 JSON。</p>
+<p><strong> Cloudflare 在设计 </strong> <strong><code> cf </code> </strong> <strong> 这个命令行工具时，就已经把 Agent 视作了一等公民。 </strong></p>
 <h2>玩法五：给你的 Agent 装上「基础设施全套外挂」</h2>
-<p>做过 AI 编程的朋友相信都有过这类体验：  <strong> 过去 Agent 往往更擅长帮我们在本地写代码、排查 bug、调试、测试。  </strong></p>
-<p>一旦遇到需要去云端搞基建的场景，比如「帮我建个云端数据库」、「帮我配个存储桶」、「帮我把代码推上线」，虽然 Agent 也能通过一些操作浏览器的</p>
-<p>Skills 来实现，但很多时候它还是会跟你说</p>
-<p>_ 「请前往 Cloudflare 控制台手动创建，并将对应的配置和环境变量告诉我 🤡」  _</p>
-<p>而现在有了 CF，你的 Agent 再也不会跟你对抗了，直接一句指令，  <strong> 就可以放心当甩手掌柜去其他事情了  </strong> ：</p>
-<p>_ 「我本地已经装好了 Cloudflare 的 cf 工具并完成了登录。请帮我用 cf CLI 查一下怎么创建 D1 数据库，帮我建一个名为 my-</p>
-<p>notes 的数据库，并在当前目录下把配置写好，然后执行 cf deploy 帮我上线。」  _</p>
-<p>!<a href="https://mmbiz.qpic.cn/sz_mmbiz_png/VUgY76U7icDNWiacYDSmbDVopeazJSquHKVbiabviaACrm6pkhIjpuzqeSqacWzLHM8EsXnCvat0zuGf3iahP1zMibEI9ickAlVibOKQobxZgiclV9vA/640?wx_fmt=png&amp;from=appmsg">img</a></p>
-<p>因为  <code> cf  </code> 提供了我们前面提到的  <code> cf cli search  </code> ，Agent 自己能精准查到每个命令的参数。</p>
-<p>而且在全新的体系里，项目配置统一改成了带类型检查的 TypeScript（  <code> cloudflare.config.ts  </code> ）。</p>
-<p>这意味着 Agent 在替你生成或修改配置文件时，如果把参数或字段拼错了，底层代码语法检查当场就能拦截并提示错误，Agent</p>
-<p>在后台自己就能自动纠错，形成闭环，不用等到部署失败了才发现。</p>
+<p>做过 AI 编程的朋友相信都有过这类体验： <strong> 过去 Agent 往往更擅长帮我们在本地写代码、排查 bug、调试、测试。 </strong></p>
+<p>一旦遇到需要去云端搞基建的场景，比如「帮我建个云端数据库」、「帮我配个存储桶」、「帮我把代码推上线」，虽然 Agent 也能通过一些操作浏览器的Skills 来实现，但很多时候它还是会跟你说</p>
+<p>_ 「请前往 Cloudflare 控制台手动创建，并将对应的配置和环境变量告诉我 🤡」 _</p>
+<p>而现在有了 CF，你的 Agent 再也不会跟你对抗了，直接一句指令， <strong> 就可以放心当甩手掌柜去其他事情了 </strong> ：</p>
+<p>_ 「我本地已经装好了 Cloudflare 的 cf 工具并完成了登录。请帮我用 cf CLI 查一下怎么创建 D1 数据库，帮我建一个名为 my- notes 的数据库，并在当前目录下把配置写好，然后执行 cf deploy 帮我上线。」 _</p>
+<figure><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/VUgY76U7icDNWiacYDSmbDVopeazJSquHKVbiabviaACrm6pkhIjpuzqeSqacWzLHM8EsXnCvat0zuGf3iahP1zMibEI9ickAlVibOKQobxZgiclV9vA/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
+<p>因为 <code> cf </code> 提供了我们前面提到的 <code> cf cli search </code> ，Agent 自己能精准查到每个命令的参数。</p>
+<p>而且在全新的体系里，项目配置统一改成了带类型检查的 TypeScript（ <code> cloudflare.config.ts </code> ）。</p>
+<p>这意味着 Agent 在替你生成或修改配置文件时，如果把参数或字段拼错了，底层代码语法检查当场就能拦截并提示错误，Agent在后台自己就能自动纠错，形成闭环，不用等到部署失败了才发现。</p>
 <h2>写在最后</h2>
 <p>今天的软件世界里，几乎所有产品都是围绕人的感官设计的——好看的界面、顺手的交互、流畅的动画。</p>
 <p>但 Agent 不在乎这些。</p>
 <p>Agent 更需要的是一个可以用文字对话的接口，一个稳定的、结构化的、可组合的接口。</p>
 <p>在 Cloudflare 的官方博客里，他们披露了一组真实数据：</p>
-<p>** 2025 年初，Agent 对 Cloudflare 传统命令行的调用量还只是个位数；到 2026 年 3 月，这个比例上升到了 25%；而在全新</p>
-<p>CLI 发布前的一周，全网调用量里竟然有整整 48% 是由 AI Agent 发起的。  **</p>
-<p>不仅如此，Agent 每天调用的不同命令种类是人类开发者的  <strong> 2 倍  </strong> ，连续执行 6 个以上复杂指令的概率更是人类的  <strong> 4 倍  </strong></p>
-<p>。</p>
-<p>!<a href="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDMibp0nk9yicDf97tmAk6Ve0LkyTzib8VK1ATaVeTQjRDTlzMLcXrc9ZKuY5HxCAicmn5uVvic8sJY09fj6XsPBziaT18YVL417PkBr8/640?wx_fmt=png&amp;from=appmsg">img</a></p>
+<p><strong> 2025 年初，Agent 对 Cloudflare 传统命令行的调用量还只是个位数；到 2026 年 3 月，这个比例上升到了 25%；而在全新CLI 发布前的一周，全网调用量里竟然有整整 48% 是由 AI Agent 发起的。 </strong></p>
+<p>不仅如此，Agent 每天调用的不同命令种类是人类开发者的 <strong> 2 倍 </strong> ，连续执行 6 个以上复杂指令的概率更是人类的 <strong> 4 倍 </strong> 。</p>
+<figure><img src="https://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDMibp0nk9yicDf97tmAk6Ve0LkyTzib8VK1ATaVeTQjRDTlzMLcXrc9ZKuY5HxCAicmn5uVvic8sJY09fj6XsPBziaT18YVL417PkBr8/640?wx_fmt=png&amp;from=appmsg" alt="img" loading="lazy" referrerpolicy="no-referrer"><figcaption>img</figcaption></figure>
 <p>曾经只有专业云运维才能搞定的一整套复杂基建，现在有了 AI 和 CF 这样的工具出现，任何人都可以把 Cloudflare 的价值发挥到最大。</p>
-<p><strong> 基础设施的使用门槛，正在被 AI 全面重塑。  </strong></p>
+<p><strong> 基础设施的使用门槛，正在被 AI 全面重塑。 </strong></p>
 <p>未来一定还会有越来越多这样的时刻发生，真是太让人期待了。</p>
-<p>![](https://mmbiz.qpic.cn/sz_mmbiz_png/ruvdeFXJIOgDiclc5blWdVrUSicicZaXfdW1QQibkGLGP5b0Rm53GvBrmq4clF2Eq5xfUJDtFO3Dxic9VWuv78vEpvg/640?wx_fmt=png&amp;from=appmsg)</p>
-<p>以上，就是本文全部内容，如果觉得这篇文章对你有启发，  点赞、比心、分享  三连就是对我最大的支持，谢谢～</p>
-<p>往期推荐阅读  ：  • [ Obsidian 从入门到进阶合集</p>
-<p>](https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&amp;__biz=MzkxOTY1MjA1Ng==&amp;scene=1&amp;album_id=4151857975356817416&amp;count=3&amp;token=1752453856&amp;lang=zh_CN#wechat_redirect)</p>
-<p>• [ 有了 NotebookLM 后，还需要 Obsidian 吗？</p>
-<p>](https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247490868&amp;idx=1&amp;sn=f1193dcb7fade0042c0514e1d6ed4998&amp;scene=21#wechat_redirect)</p>
-<p>• [ 我试了 NotebookLM 学习法后，彻底抛弃传统学习方式</p>
-<p>](https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247490943&amp;idx=1&amp;sn=270b19200d4d2a34221d3060a2a5bc1e&amp;scene=21#wechat_redirect)</p>
-<p>• [ AI 时代，你的上下文才是最值钱的资产</p>
-<p>](https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247491293&amp;idx=1&amp;sn=c5714360a5c36f1cfe6b83ce0a146958&amp;scene=21#wechat_redirect)</p>
-<p>• [ 2026 年如何用好 AI，我发现这些能力更重要</p>
-<p>](https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247491553&amp;idx=1&amp;sn=58d7cfe10cdfcc87b2b9e8fc7b46c63d&amp;scene=21#wechat_redirect)</p>
-<p>•  [ Openclaw 这么火，可你真的需要它吗？</p>
-<p>](https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247491593&amp;idx=1&amp;sn=4f902da23c117eed62e570355f1cab5b&amp;scene=21#wechat_redirect)</p>
-<p>• [ 全网都在抄 Karpathy 的知识库，但大多数人只学到了皮毛</p>
-<p>](https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247492131&amp;idx=1&amp;sn=f650d6171269f383f4f6363e068aa48c&amp;scene=21#wechat_redirect)</p>
-<p>• [ 如何用 Claude Code 开启10 倍学习法？</p>
-<p>](https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247492671&amp;idx=1&amp;sn=0bbacaff104f5ef8b8f2dd5329b95832&amp;scene=21#wechat_redirect)</p>
-<p>• [ 免费 + 实时 + 全平台，这可能是 Obsidian 最好用的同步方案</p>
-<p>](https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247492858&amp;idx=1&amp;sn=02199a1230fd59a28fe8e88cc79ee104&amp;scene=21#wechat_redirect)</p>
-<p>• [ 用 Obsidian 做知识管理快一年，这 10 条经验我希望一开始就知道</p>
-<p>](https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247492876&amp;idx=1&amp;sn=56f2a18bfbd09e5c9f94691d677c3525&amp;scene=21#wechat_redirect)</p>
-<p>• [ AI 写作难在哪？到底如何才能用 AI 写出 90 分以上的内容？</p>
-<p>](https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247493011&amp;idx=1&amp;sn=487ad298d276707dfaf43cdaa4c20827&amp;scene=21#wechat_redirect)</p>
-<p>• [ 写日记十年，直到给 AI 做长期记忆，我突然明白：日记就是人生上下文</p>
-<p>](https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247493039&amp;idx=1&amp;sn=a5338f1676864b3452c6b294b2bb8101&amp;scene=21#wechat_redirect)</p>
+<figure><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/ruvdeFXJIOgDiclc5blWdVrUSicicZaXfdW1QQibkGLGP5b0Rm53GvBrmq4clF2Eq5xfUJDtFO3Dxic9VWuv78vEpvg/640?wx_fmt=png&amp;from=appmsg" alt="" loading="lazy" referrerpolicy="no-referrer"></figure>
+<p>以上，就是本文全部内容，如果觉得这篇文章对你有启发， 点赞、比心、分享 三连就是对我最大的支持，谢谢～</p>
+<p>往期推荐阅读 ： • <a href="https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&amp;__biz=MzkxOTY1MjA1Ng==&amp;scene=1&amp;album_id=4151857975356817416&amp;count=3&amp;token=1752453856&amp;lang=zh_CN#wechat_redirect"> Obsidian 从入门到进阶合集</a></p>
+<p>• <a href="https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247490868&amp;idx=1&amp;sn=f1193dcb7fade0042c0514e1d6ed4998&amp;scene=21#wechat_redirect"> 有了 NotebookLM 后，还需要 Obsidian 吗？ </a></p>
+<p>• <a href="https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247490943&amp;idx=1&amp;sn=270b19200d4d2a34221d3060a2a5bc1e&amp;scene=21#wechat_redirect"> 我试了 NotebookLM 学习法后，彻底抛弃传统学习方式</a></p>
+<p>• <a href="https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247491293&amp;idx=1&amp;sn=c5714360a5c36f1cfe6b83ce0a146958&amp;scene=21#wechat_redirect"> AI 时代，你的上下文才是最值钱的资产</a></p>
+<p>• <a href="https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247491553&amp;idx=1&amp;sn=58d7cfe10cdfcc87b2b9e8fc7b46c63d&amp;scene=21#wechat_redirect"> 2026 年如何用好 AI，我发现这些能力更重要</a></p>
+<p>• <a href="https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247491593&amp;idx=1&amp;sn=4f902da23c117eed62e570355f1cab5b&amp;scene=21#wechat_redirect"> Openclaw 这么火，可你真的需要它吗？ </a></p>
+<p>• <a href="https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247492131&amp;idx=1&amp;sn=f650d6171269f383f4f6363e068aa48c&amp;scene=21#wechat_redirect"> 全网都在抄 Karpathy 的知识库，但大多数人只学到了皮毛</a></p>
+<p>• <a href="https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247492671&amp;idx=1&amp;sn=0bbacaff104f5ef8b8f2dd5329b95832&amp;scene=21#wechat_redirect"> 如何用 Claude Code 开启10 倍学习法？ </a></p>
+<p>• <a href="https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247492858&amp;idx=1&amp;sn=02199a1230fd59a28fe8e88cc79ee104&amp;scene=21#wechat_redirect"> 免费 + 实时 + 全平台，这可能是 Obsidian 最好用的同步方案</a></p>
+<p>• <a href="https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247492876&amp;idx=1&amp;sn=56f2a18bfbd09e5c9f94691d677c3525&amp;scene=21#wechat_redirect"> 用 Obsidian 做知识管理快一年，这 10 条经验我希望一开始就知道</a></p>
+<p>• <a href="https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247493011&amp;idx=1&amp;sn=487ad298d276707dfaf43cdaa4c20827&amp;scene=21#wechat_redirect"> AI 写作难在哪？到底如何才能用 AI 写出 90 分以上的内容？ </a></p>
+<p>• <a href="https://mp.weixin.qq.com/s?__biz=MzkxOTY1MjA1Ng==&amp;mid=2247493039&amp;idx=1&amp;sn=a5338f1676864b3452c6b294b2bb8101&amp;scene=21#wechat_redirect"> 写日记十年，直到给 AI 做长期记忆，我突然明白：日记就是人生上下文</a></p>
 <p>预览时标签不可点</p>
 <p>不喜欢</p>
-<p>微信扫一扫</p>
-<p>关注该公众号</p>
+<p>微信扫一扫关注该公众号</p>
 <p>知道了</p>
-<p>微信扫一扫</p>
-<p>使用小程序</p>
+<p>微信扫一扫使用小程序</p>
 <hr>
-<p>取消  允许</p>
+<p>取消 允许</p>
 <hr>
-<p>取消  允许</p>
+<p>取消 允许</p>
 <hr>
-<p>取消  允许</p>
-<p>×  分析</p>
-<p>__</p>
-<p>!<a href="http://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDPsDsqTOcJUVzk6vM7zyDvB92cyRq8icHibdCibgXjSTGkic57GusrRhXkQWYYVDC136AoFBycxllmlv4724WIVN00eRUO0ux5f9lw/0?wx_fmt=png">作者头像</a></p>
-<p>微信扫一扫可打开此内容，</p>
-<p>使用完整服务</p>
-<p>：  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  。  视频  小程序  赞  ，轻点两下取消赞  在看  ，轻点两下取消在看</p>
-<p>分享  留言  收藏  听过</p>
-<footer>生成于 2026-10-25 20:57 · build_site.py</footer>
+<p>取消 允许</p>
+<p>× 分析</p>
+<figure><img src="http://mmbiz.qpic.cn/mmbiz_png/VUgY76U7icDPsDsqTOcJUVzk6vM7zyDvB92cyRq8icHibdCibgXjSTGkic57GusrRhXkQWYYVDC136AoFBycxllmlv4724WIVN00eRUO0ux5f9lw/0?wx_fmt=png" alt="作者头像" loading="lazy" referrerpolicy="no-referrer"><figcaption>作者头像</figcaption></figure>
+<p>微信扫一扫可打开此内容，使用完整服务</p>
+<p>： ， ， ， ， ， ， ， ， ， ， ， ， 。 视频 小程序 赞 ，轻点两下取消赞 在看 ，轻点两下取消在看分享 留言 收藏 听过</p></div>
+<footer>生成于 2026-10-25 21:43 · build_site.py</footer>
 </div></body></html>
