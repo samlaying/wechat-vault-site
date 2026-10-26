@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>有人用 REA 逆向了 Claude 桌面端！30 个教科书级别的 React 组件全部开源</title><link rel="stylesheet" href="../assets/style.css">
+</head><body><div class="container">
+<header class="site"><div class="title"><a href="../index.html">微信数字资产库 · 分析站</a> · <a href="../articles/index.html">📄 公众号</a> · <a href="../private/index.html">🔒 私聊区</a></div>
+<div class="sub">由本地 vault 生成 · raw 层永不上云</div></header>
+<div class="crumbs"><a href="../index.html">首页</a> / 公众号 / 2026-10-25</div>
+<h1>有人用 REA 逆向了 Claude 桌面端！30 个教科书级别的 React 组件全部开源</h1>
+<p>原创  Cyber Nichijou  Cyber Nichijou  人造物与日常</p>
+<p>_2026年10月15日 19:00_ __ _ _ _ _ _ 浙江  _</p>
+<p>在小说阅读器读本章</p>
+<p>去阅读</p>
+<p>人，进来学交互了</p>
+<p>!<a href="https://mmbiz.qpic.cn/mmbiz_png/oMljJRX3S3Vcp4Zaetg3BfIeBBZUMCyGL3TibcPfIhUyiauUaMbxmMvIe3FgC8rHymM2za6JibibYbdPc8TibQ6pkFLMC9P4NiapHgziaN8sgwGwpU/640?wx_fmt=png">cover</a></p>
+<p>REA 是最近国内外开发者都为之疯狂的一个项目，10 月 刚上GitHub，目前就已经 25 万星了。它的口号是  “逆向一切”  ，把 AI</p>
+<p>接进去就能看到软件咋做的，一项一项拆出来。</p>
+<p>推友 Caho1 用 REA 就  把Claude desktop app给拆了  ，之后用 TypeScript + Tailwind</p>
+<p>把核心交互逻辑手写还原成了 30 个独立的 React 组件文件。还写了一份 3000 多行的设计分析手册。</p>
+<p>不看不知道，原来平时 Claude那些用起来温润舒适的体验，背后都是设计上的  极致工程化  ……</p>
+<p>感觉这一个项目就够学好久了，比起四拼八凑找动效网站抄动效有用得多。这个仓库不仅给了你 React 组件，还讲明白了设计和体感之间的那根牵着的逻辑。</p>
+<p>![](https://mmbiz.qpic.cn/mmbiz_png/oMljJRX3S3WJCKIPwdibKKLqSRZCFlyPlSjYqXiaZOKiawnMMx32yTCtmAO6xryrWN8RTJCyXkDqdjz8ibnjbWWAv366YOecpLjh0AnRVMLjMSw/640?wx_fmt=png)</p>
+<h3>拆出来的东西比组件更有意思</h3>
+<p>30 个组件是真的实用。但逆向手册里真正有价值的，是 Anthropic 藏在代码里的  <strong> 那些设计决策  </strong> 。挑几个说。</p>
+<p><strong> 滚动边缘渐隐。  </strong> 长对话列表顶部和底部的文字不会硬切消失，有一层 7 档非线性透明度遮罩。7 个采样点的 Alpha 分布近似  y≈x^1.5</p>
+<p>幂律曲线，比线性渐变柔和得多，高分屏上也不会出现色阶断层。</p>
+<p>![](https://mmbiz.qpic.cn/sz_mmbiz_gif/oMljJRX3S3XibycG9yIS63QxprOO2r2ib5qfnJ6tBibLVMnvt1UcTibcH4lzHPDvibiagUjWib8OxiblI2iaPjAibUllMfNfuib8hiaHu2LmBEdwakoK5lQ/640?wx_fmt=gif)</p>
+<p><strong> 拖卡片会微微歪。  </strong> 拖附件的时候有 4px 死区防误触，进入拖拽后卡片根据鼠标移动方向产生最大 3.5°</p>
+<p>的倾斜角。刚好是纸张被指尖捏起来的角度。</p>
+<p><strong> 滚屏不抢你正在读的。  </strong> AI 聊天界面最抓狂的时刻：模型正在吐字，你往上滚想看看前面的代码，页面立刻把你拽回最底部。Claude 的做法是</p>
+<p>150ms 冷却机制。检测到你主动向上滚动，系统锁定自动滚屏 150ms，加上 40px 的底部容差。不会在你阅读的时候抢屏幕。代码在</p>
+<p>useClaudeScrollPinning.ts。</p>
+<p><strong> 中文回车不误发。  </strong> 用拼音打字，按回车确认候选词的时候消息直接飞出去。几乎所有 AI 聊天界面都有这个 bug。Claude 用了双重守卫</p>
+<p>!(e.nativeEvent.isComposing || e.keyCode === 229)，输入法组合状态下回车不触发发送。还拦住了 Escape</p>
+<p>冒泡，关候选词不会顺带关掉整个对话窗。</p>
+<p><strong> 弹簧只弹一次。  </strong> 很多 UI 的弹簧动效做出来像果冻，晃三晃才停。Claude 的弹簧参数是</p>
+<p>stiffness=380、damping=32、mass=1.0，正好落在临界阻尼点，超调量压到 0.5% 以内。有重量感，但一次到位。</p>
+<p>![](https://mmbiz.qpic.cn/sz_mmbiz_gif/oMljJRX3S3VjIT6ic5xbo5YuTfIWkEN2NFwApYIace2FoA0KkbeJNgfHW2QhoPMItxZklcvVbaVvB2wzAkJMNRndAm1cwEnHky5YyNhWC6dM/640?wx_fmt=gif)</p>
+<p><strong> 提示音是代码合成的。  </strong> 发送消息那声轻响没有音频文件。Claude 直接调 Web Audio API 的振荡器，正弦波混三角波，合成</p>
+<p>C5+E5 双音和弦，音量锁定 30%，15ms 淡入、120ms 淡出。零外部依赖，也消除了音频启停时的爆音。代码在</p>
+<p>ClaudeAudioPlayer.ts。</p>
+<blockquote>0.5% 超调量、3.5° 倾角、150ms 冷却、30% 音量。每一个都是在&quot;刚好对&quot;和&quot;过了&quot;之间调出来的数字。</blockquote>
+<h3>几个值得直接搬走的</h3>
+<p><strong> ChatComposer + RichComposerWithMentions  </strong> ：Claude 的输入框。自适应高度伸缩，三态阴影（空 /</p>
+<p>有内容 / 聚焦），自带 CJK 输入法守卫、/ 指令触发和 @ 上下文提及。做 AI 聊天应用的可以直接替换你现有的输入组件。</p>
+<p>![](https://mmbiz.qpic.cn/mmbiz_png/oMljJRX3S3U4wdqxSibLTjOeCvNiaE2ibzkrnrcWO1WkJBSNXumrKhAY650loL5G6dcj2OESzteHWnZwTtzSh6fYfgbthg5DxUXTjG51XgFZTM/640?wx_fmt=png)</p>
+<p><strong> ModelSwitcherWithTokenGauge  </strong> ：模型选择器，带一个 SVG 四色环形仪表盘，一眼看到</p>
+<p>input、output、cache read、cache write 各占多少上下文窗口。做 AI 工具的话，这个组件的信息密度很高。</p>
+<p><strong> ThinkingAccordion + ReasoningAmbientGlow  </strong> ：思考过程折叠面板，用 CSS Grid 的 0fr→1fr</p>
+<p>做弹性伸缩动画，模型还在生成的时候强制展开，生成完才允许折叠。配套的 ReasoningAmbientGlow</p>
+<p>是思考时卡片周围那层陶土色暖光漫反射，加上文字上的非对称扫光效果。</p>
+<p>![](https://mmbiz.qpic.cn/mmbiz_gif/oMljJRX3S3UsJoOEsFmPxsZ2gsnIbLRKIn5aP72Adl9MB7PX34t8zaLsK7dVXxF7sTf8zEuHOov0K4nIk2iaE4f0eFysAXAPjJViceDI9zYUQ/640?wx_fmt=gif)</p>
+<p><strong> ScrollFadeContainer  </strong> ：上面说的那个 7 档渐隐容器。不限于 AI 场景，任何长列表都能直接套上去用。</p>
+<p><strong> ClaudeMotionPresets  </strong> ：四套生产级弹簧参数（Bouncy / Snappy / Gentle / Heavy</p>
+<p>Snap），配合 Framer Motion 直接用。不用自己调参了。</p>
+<p><strong> McpToolDecisionCard  </strong> ：Agent 调用外部工具时的三态授权卡片（待批准 → 运行中 → 成功/失败）。做 agent</p>
+<p>应用的可以直接拿这套状态机。</p>
+<p><strong> LiveMicActivityBars  </strong> ：语音模式的 6 频段实时波形柱。8% 噪声门限过滤掉空调底噪，0.7 次幂 Gamma</p>
+<p>压缩让人声细语和高分贝之间的动态范围很均匀。</p>
+<p>![](https://mmbiz.qpic.cn/mmbiz_gif/oMljJRX3S3WMT75BwrOXRuQf0dhEIqjrfiaF9o0BCuhE4Y6sAyqtQVuhzt5qkLibFFWG3MB12x5AXSnIuTdEuZuD9CuPvngoYMjn3wcL9FPS4/640?wx_fmt=gif)</p>
+<p><strong> MediaLightboxViewer + useClaudeSharedElementTransition  </strong></p>
+<p>：点击缩略图展开灯箱时的共享元素转场。缩略图的位置、尺寸、圆角连续变形到全屏视图，缩放以鼠标光标为不动点，不会把你想看的细节推出画面。</p>
+<p>![](https://mmbiz.qpic.cn/mmbiz_gif/oMljJRX3S3UO1wbsI9UhftMI9ZzVgwvzATtmSN4xfKNBHESRc2YicOSIoQtRwAT66OErK2e5nE75tuM3hKLJNibOiaxfkvexocKN7ncXubNajM/640?wx_fmt=gif)</p>
+<p><strong> useRateLimitBackoff  </strong> ：429/503 限流时的指数退避 Hook，带 20% 随机抖动和 3 次自动熔断。调 API</p>
+<p>的项目都需要这个。</p>
+<h3>怎么用</h3>
+<p><strong> 先看效果。  </strong> clone 下来，浏览器双击打开  Storybook.html  ，不需要 Node.js：</p>
+<blockquote>BASH    git clone https://github.com/Caho1/open-claude-ui.git    open open-claude-ui/docs/claude-components-storybook.html</blockquote>
+<p>所有组件的动效、主题切换、交互反馈都能在storybook.html里直接体验。看中哪个再去拿源码。</p>
+<p><strong> 拿组件。  </strong> code-examples/ 目录下 30 个独立 .tsx 文件，配合 cds-theme.css 和</p>
+<p>tailwind.config.js 使用。每个文件零耦合，看中哪个拷哪个。</p>
+<p><strong> 喂给 AI 编程助手。  </strong> 仓库自带 AGENTS.md 和 CLAUDE.md，丢进你项目的上下文，Cursor 和 Claude Code</p>
+<p>就能按这套设计规范写新组件。</p>
+<h3>30 个组件一览</h3>
+<p>●  <strong> 基础控件  </strong></p>
+<p>：CdsButton、SegmentedControl、StatusIndicators、ConfirmationDialog、AttachmentCard</p>
+<p>●  <strong> 会话与输入  </strong></p>
+<p>：ChatComposer、ChatMessageBubbles、ThinkingAccordion、RichComposerWithMentions、ModelSwitcherWithTokenGauge、McpToolDecisionCard</p>
+<p>●  <strong> 动效与光效  </strong> ：ClaudeMotionPresets、ReasoningAmbientGlow、ScrollFadeContainer</p>
+<p>●  <strong> 视听与媒体  </strong></p>
+<p>：ClaudeAudioPlayer、LiveMicActivityBars、MediaLightboxViewer、CodeBlock、StreamingDiffViewer</p>
+<p>●  <strong> 交互物理  </strong></p>
+<p>：ArtifactsSplitPaneResizer、EpitaxyIframeBridge、useClaudeSharedElementTransition</p>
+<p>●  <strong> 桌面与协作  </strong></p>
+<p>：createClaudeMainWindow、ClaudeDesktopHeader、DraggableSessionList、CoworkAgentCanvas</p>
+<p>●  <strong> 工程 Hooks  </strong></p>
+<p>：useClaudeScrollPinning、useClaudeRovingFocus、useRateLimitBackoff、ContainerResponsiveBar</p>
+<blockquote>逆向手册全文在仓库的 docs/Claude Design System (CDS).md，七大章节 31 小节，从设计哲学到每一个关键帧参数都有反编译取证位置。</blockquote>
+<p>![](https://mmbiz.qpic.cn/mmbiz_png/oMljJRX3S3XfoTGsYwyso5AfK4xG0DyejO1oJQW00LWwAeicq5iaJhetYgdMNb8UGvyRtcOWe6kfm1XlOIAztbic90X1ph08GsFvWsFic0o9eno/640?wx_fmt=png)</p>
+<p>作者  lili &amp; Opus</p>
+<p>地点  杭州</p>
+<p>时间  寒露</p>
+<p>预览时标签不可点</p>
+<p>不喜欢</p>
+<p>微信扫一扫</p>
+<p>关注该公众号</p>
+<p>知道了</p>
+<p>微信扫一扫</p>
+<p>使用小程序</p>
+<hr>
+<p>取消  允许</p>
+<hr>
+<p>取消  允许</p>
+<hr>
+<p>取消  允许</p>
+<p>×  分析</p>
+<p>__</p>
+<p>!<a href="http://mmbiz.qpic.cn/sz_mmbiz_png/oMljJRX3S3WvFTcicOmpdW1baYNnUQDSOETIphPBf0o5lF7e8nmGMkGibBPQ7fM5oz4aia4XQZ7nFxbaEMsf0ufGibg4VtCxicQ5B3NOKibV0spZA/0?wx_fmt=png">作者头像</a></p>
+<p>微信扫一扫可打开此内容，</p>
+<p>使用完整服务</p>
+<p>：  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  。  视频  小程序  赞  ，轻点两下取消赞  在看  ，轻点两下取消在看</p>
+<p>分享  留言  收藏  听过</p>
+<footer>生成于 2026-10-25 20:57 · build_site.py</footer>
+</div></body></html>

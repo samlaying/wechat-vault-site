@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>使用Claudeflare 实现域名邮箱自由</title><link rel="stylesheet" href="../assets/style.css">
+</head><body><div class="container">
+<header class="site"><div class="title"><a href="../index.html">微信数字资产库 · 分析站</a> · <a href="../articles/index.html">📄 公众号</a> · <a href="../private/index.html">🔒 私聊区</a></div>
+<div class="sub">由本地 vault 生成 · raw 层永不上云</div></header>
+<div class="crumbs"><a href="../index.html">首页</a> / 公众号 / 2026-10-25</div>
+<h1>使用Claudeflare 实现域名邮箱自由</h1>
+<p>原创  进击的杨叨叨  进击的杨叨叨  进击的杨叨叨</p>
+<p>_2026年09月04日 00:07_ __ _ _ _ _</p>
+<p>在小说阅读器读本章</p>
+<p>去阅读</p>
+<p>我们在做自己的网站时候，为了彰显网站的专业性、安全性通常会在网站页脚添加一个联系邮箱，  方便用户遇到问题时和我们联系，邮箱的格式通常是</p>
+<p>自定义前缀@网站域名  ，比如：</p>
+<p>![](https://mmbiz.qpic.cn/mmbiz_png/qYr2HOmT7xibO6bWRVic1icK5gROpt0XQTdoh13fbKsjyc6jxzLGicIVxic4q0Lgjr69YOU8ExUeSO0Hm0yZVhLfL5cDRKRn1an0UWdSbXJbH6tc/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>再比如：</p>
+<p>![](https://mmbiz.qpic.cn/sz_mmbiz_png/qYr2HOmT7xibJiaNoP1eemdsQmE3q0oK3LSG8xoWLzGdYPzlpibZQNvzULNIoDHlKFd9tLgdWK9lTME8Qz0rNtc0T7Zqfof54Yv4lK8jFMmFtY/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>很少有人使用自己的私人邮箱，这样显得不够专业、高大上。  那么我们怎样获得一个这样的专业性邮箱呢？这篇文章手把手教会你。  前期准备：</p>
+<p>一个域名（可以直接在Claudeflare上购买，或者从别的服务商迁移到Claudeflare）。</p>
+<p>登录Claudeflare，在侧边栏里选择：计算&gt;电子邮箱服务&gt;电子邮箱路由，点击接入域名（这里我已经接入一个了）</p>
+<p>![](https://mmbiz.qpic.cn/sz_mmbiz_png/qYr2HOmT7xicG2icZ1179331iaCB50kDKIVcSylr0XyMiaicepRCsfzhiaDX3ewgrX3vG7r2N7UnOmctJIuCsdrGSc45Jo0icAoYH7YkOictBhicf40k/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>点击后，选择一个你要进行邮箱路由转发服务的域名：</p>
+<p>![](https://mmbiz.qpic.cn/sz_mmbiz_png/qYr2HOmT7x8xw6LMvP7ibUeoql4v0vgDdic8kFjJddkEHzAOwIkC1SzCpxTnliaMxpaBnicibTSRX73KwoUyLhib9bgmlo5Ziah96xatGnA10iaiafas/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>![](https://mmbiz.qpic.cn/sz_mmbiz_png/qYr2HOmT7xicg2E8EF84iarpgzAcLJPNBicZUU9VnOOkcMibY7BsGtSssm7nPPiaCj45DibBj7quWBIfuGLd1aNwc4x4yufgDn8b8Mzrpy9BLnfvA/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>点击激活，Claudflare会自动为这个域名创建几个DNS记录，这些记录在域名管理页面也可以看到。  激活以后，就是配置环节了：</p>
+<p>![](https://mmbiz.qpic.cn/sz_mmbiz_png/qYr2HOmT7x9zVKgSFiaImXTRXu5WhVf517kM8YQT4IOHrtekLmsxcUQLEcxEkcbYvrNiaJPdR6jlNcmhGYP7yqYaCeMBvoXo5JPqvZnDpBZkE/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>重点关注路由规则和目标地址。  首先是路由规则：</p>
+<p>![](https://mmbiz.qpic.cn/mmbiz_png/qYr2HOmT7x8icS3OVE8p7iaY5fodO8HdxUibO79HrRfb8jXclBgRgx0AZ7kcDJ6nyJPHTRfAnEicY2nAln1hM9VBGo1Qg0qicBvTJ1sdX06L9nFg/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>可以看到，我创建了两条，第一条是用户用邮箱注册我的网站时，用来给用户发送验证码的邮箱；第二条是用户联系我的邮箱。  下面是创建路由规则时的选项：</p>
+<p>![](https://mmbiz.qpic.cn/mmbiz_png/qYr2HOmT7xicO7Pqiap2HObTRE6iaDxY6vJiajhj4c5YSTamQB7ADicfnOVDqwfVYt7zgVprJZibV4yKCfh7SicqJx3PRd5DwrvXhYcfiaibUk6mVG14/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>匹配模式是自己自定义的，比如你打算做一个联系邮箱：可以写support</p>
+<p>![](https://mmbiz.qpic.cn/mmbiz_png/qYr2HOmT7xibibyrSDYRQ4O8ibicpL5jdFs2aHbohGLvdQCpRE4NZicPp3ic8Bic79jBoYTjgpa4bHKCDiaictb6Oicl4NHPYB3rOTHHKrrIwLpSq4HlU/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>然后选择域名，就是我们刚才激活的域名。  最后选择操作，都选择</p>
+<p>发送到电子邮件，就是用户回复你时，都会回复给这个邮箱，然后再经过Claudflare转发到你的私人邮箱，怎么转发到你的</p>
+<p>私人邮箱呢，这就是下面要讲的目标地址。  选择目标地址选项：</p>
+<p>![](https://mmbiz.qpic.cn/mmbiz_png/qYr2HOmT7xibfLQLZJviaLYOCxHVOQJaiceGxayjsukonGyfwyoDxLl9jL6JbfT9BSick0P43cLfiawdicYCAsOSyqpq9NHdxzgicicGbwa0USlxPco/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>添加地址，这里就是你的私人的真实邮箱了，比如谷歌、QQ等，这里我用的outlook。添加上以后，Claudflare会给你的这个私人邮箱发送一个验证消息，我们再去邮箱里面验证一下就OK了。</p>
+<p>至此，大功告成。  补充：使用Resend实现用户邮箱注册时用域名邮箱给用户发送验证码。</p>
+<p>在Resend控制台页面，选择Domains,然后添加域名，就是我们在Claudflare激活的那个域名</p>
+<p>![](https://mmbiz.qpic.cn/mmbiz_png/qYr2HOmT7xibX8CRl0AHSnaIU9VMrYpjwAu9Vprhw8pnuFWicCEG2HAM8W4tjpjYhJWmHvVfkRGMbg21Rp1O1XgmcKVcUJyp4a0W4jYksNLe4/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>![](https://mmbiz.qpic.cn/sz_mmbiz_png/qYr2HOmT7x873Bx8C6XANnibW0SiaPMaS8IEw3xY0jflIpckGqFymiaVmIVoJo3bcLPSWBKpQ0ticlqhfo51ov0j71e2O6Zex27VxibSh8T3reM4/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>等待验证通过就行了。  如何自定义发送验证码时的模板：在Resend里有模板设置</p>
+<p>![](https://mmbiz.qpic.cn/sz_mmbiz_png/qYr2HOmT7x8sNo68KCfiaCsKdl19b8fCUVynjxht2ZdyCcohgNPXD8zw62QEeNI81LWh9zBeIbUMVeiageEmt0Z376r8ewbhuic0scDIXhbgkk/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>![](https://mmbiz.qpic.cn/sz_mmbiz_png/qYr2HOmT7xic2VcoZvuTA6oVW6rzSOpUfibPIYICGnQn3EmLHB84pibtyP1EPQFK6GXJ1y1Bo6FSzlGlWP4tvIevOTCib9uoPUicx9Q4MygWDe0Q/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>可以添加图片，可以自定义样式。  感谢观看！</p>
+<p>预览时标签不可点</p>
+<p>不喜欢</p>
+<p>微信扫一扫</p>
+<p>关注该公众号</p>
+<p>知道了</p>
+<p>微信扫一扫</p>
+<p>使用小程序</p>
+<hr>
+<p>取消  允许</p>
+<hr>
+<p>取消  允许</p>
+<hr>
+<p>取消  允许</p>
+<p>×  分析</p>
+<p>__</p>
+<p>!<a href="http://mmbiz.qpic.cn/sz_mmbiz_png/GvQDn4FJQlelUCTVJflqKS3TfXYFsMSH9yvdxUT8XHxUViaTQUja7GtRP5ytwja2Z2QPHfcJI7N2EguDpXicWLVA/0?wx_fmt=png">作者头像</a></p>
+<p>微信扫一扫可打开此内容，</p>
+<p>使用完整服务</p>
+<p>：  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  。  视频  小程序  赞  ，轻点两下取消赞  在看  ，轻点两下取消在看</p>
+<p>分享  留言  收藏  听过</p>
+<footer>生成于 2026-10-25 20:57 · build_site.py</footer>
+</div></body></html>

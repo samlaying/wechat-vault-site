@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>因为总感觉OpenClaw有点不顺手，所以我决定自己写一个</title><link rel="stylesheet" href="../assets/style.css">
+</head><body><div class="container">
+<header class="site"><div class="title"><a href="../index.html">微信数字资产库 · 分析站</a> · <a href="../articles/index.html">📄 公众号</a> · <a href="../private/index.html">🔒 私聊区</a></div>
+<div class="sub">由本地 vault 生成 · raw 层永不上云</div></header>
+<div class="crumbs"><a href="../index.html">首页</a> / 公众号 / 2026-10-25</div>
+<h1>因为总感觉OpenClaw有点不顺手，所以我决定自己写一个</h1>
+<p>原创  雾雾 @ FogDong  雾雾 @ FogDong  雾雾的存档点</p>
+<p>_2026年02月28日 11:42_ __ _ _ _ _</p>
+<p>在小说阅读器读本章</p>
+<p>去阅读</p>
+<p>这几天用空闲时间搓了个小项目 -  SoleClaw:  https://github.com/FogDong/soleclaw</p>
+<p>记录一下我为什么要写这个项目，以及在 vibing 这个项目过程中遇到的坑</p>
+<h2>How it&#x27;s get started</h2>
+<p>在尝试了 OpenClaw 一段时间后，我一开始感觉很新奇，但逐渐也发现它有一些设计我并不喜欢。 我喜欢的点：</p>
+<ul><li>很有 &quot;人&quot; 味。很奇妙，人总是在非人类身上追求人性。OpenClaw 用大量的 system prompt，在 AGENTS.md 和 HEARTBEAT 来教会 agent 要更主动的回复，要让对话进行下去。用更多的 emoji 和主动称呼，让我更愿意和这个 agent 交流，让他做事。 </li></ul>
+<p>我不喜欢的点：</p>
+<ul><li>重复任务的不确定性。OpenClaw 的 Cron 其实是个非常重要的功能，在有限的样本里（仅指我和曾哥），我们平时主要会让它做一些定时的信息汇总（比如 Hackernews 热点汇总），任务提醒（比如喝水提醒）以及类备忘录（记 TODO，背单词等）。 </li><li>数据管理的割裂。OpenClaw 的 memory 是 SQLite + embedding ，但工具产生的数据和 agent 的记忆是割裂的。比如 Cron 任务收集的新闻、用户标记的兴趣、Todo 列表，这些数据散落在不同地方，没有一个统一的管理方式。我理想中的状态是：所有工具共享一个数据库，工具之间的数据天然可以互通。 </li></ul>
+<p>遇到了这些问题，我就想尝试去解决。还是以 Hackernew 定期新闻汇总这个任务为例，OpenClaw 的 Cron 其实是这样的：</p>
+<ul><li>*   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   * </li></ul>
+<p>eounter(lineounter(lineounter(lineounter(lineounter(lineounter(lineounter(lineounter(lineounter(lineounter(lineounter(line{  &quot;id&quot;: &quot;2a001f6d-7da7-4412-b8d7-df8db157e4d7&quot;,  &quot;name&quot;: &quot;hn-digest-zh-11-and-16&quot;,  &quot;enabled&quot;: true,  &quot;schedule&quot;: {    &quot;kind&quot;: &quot;cron&quot;,    &quot;expr&quot;: &quot;5 11,16 * * *&quot;,    &quot;tz&quot;: &quot;America/Los_Angeles&quot;  },  &quot;sessionTarget&quot;: &quot;isolated&quot;,  &quot;wakeMode&quot;: &quot;now&quot;,  &quot;payload&quot;: {    &quot;kind&quot;: &quot;agentTurn&quot;,    &quot;model&quot;: &quot;gpt&quot;,    &quot;thinking&quot;: &quot;low&quot;,    &quot;timeoutSeconds&quot;: 240,    &quot;message&quot;: &quot;请做一份 Hacker News 值得关注新闻简报（面向软件工程师，简洁但有信息密度）...&quot;  },  &quot;delivery&quot;: {    &quot;mode&quot;: &quot;announce&quot;  }}</p>
+<p>可以看到其实就是一个普通的 Cron，只不过 Cron 的任务是做一次 agentTurn，然后把任务信息发给模型。</p>
+<p>这倒也没啥问题，但是我理想中的流程应该是这样的：</p>
+<ul><li>*   *   * </li></ul>
+<p>ounter(lineounter(lineounter(line1. Trigger Cron2. 某个工具能收集到 hackernews 上的热点新闻，如果这个新闻之前已经收集过了，进行去重。然后发给模型3. 模型根据 prompt 处理数据，然后返回给用户</p>
+<p>其实区别不是太大，但跟 OpenClaw 这种直接做 agentTurn 的做法相比，关键的差异在于：OpenClaw 每次 Cron 触发都是让 LLM</p>
+<p>从零开始完成整个任务——爬数据、去重、分析、总结，全靠 LLM 的 reasoning chain</p>
+<p>串起来。这就导致每次执行的结果不确定，可能重复推送昨天的新闻，也可能漏掉某些步骤。而我想要的是：数据收集和去重这种确定性的工作由专门的工具代码来做，LLM</p>
+<p>只负责最后一步——把处理好的数据变成人话。工具是确定的，LLM 是不确定的，所以应该尽量把确定性的部分从 LLM 里剥离出来。</p>
+<p>为了达成我想要的 claw，我打算直接自己搓一个。</p>
+<blockquote>Why? Cause coding is cheap!!</blockquote>
+<h2>我想要一个什么样的 claw</h2>
+<p>写之前就需要先考虑清楚，我想要的 claw 是什么样的？</p>
+<ul><li>我希望这个在我给这个 agent 一个任务的时候，他可以先进行判断：这是不是一个长期且重复的任务？如果是的话，他应该主动提出：我可以为这个功能做个工具 </li><li>做个工具意味着，这是一个给 agent 用的工具，而不是 human facing 的。这样的话，长期下来，这个 agent 就会自己补足自己需要的工具，也能变得更加好用。每次都根据用户需求写一个工具也意味着，这不一定是个通用的工具，但一定是最满足当前这个用户需求的工具 </li></ul>
+<blockquote>Again, this is because coding is cheap!!</blockquote>
+<p>同时，让 agent 自己写工具就可以让这些所有的工具都共享数据库，这样工具之间的数据就可以流通。</p>
+<p>比如说：我需要一个 Todo List 的工具和 Hacker News 新闻的工具。 Todo List 可以让 agent</p>
+<p>帮我记住我想做的事情，也可以让他每天提醒我。 而 Hacker News 新闻收集可以让 agent</p>
+<p>先去爬一下数据，进行分析之后挑出我可能感兴趣的几条摘要发给我，我确认之后再告诉他我对哪些比较感兴趣，让他给我记个 todo。这样在每天的 Todo</p>
+<p>提醒里，我就可以直接看到我想看但还没来得及看的新闻。</p>
+<p>OK，需求很清楚了，开搓！</p>
+<h3>Get Start</h3>
+<p>我首先参考了  nanobot  以及  openclaw  两个项目的代码。 当然了，不是我参考，是我让 claudecode 去参考...</p>
+<p>先跟 claudecode 讨论了一波需求之后，我们给这个项目命名为  <code> soleclaw  </code> ，寓意是一个可以自我演进的 claw。</p>
+<p>Soleclaw 的核心设计理念其实就一句话：  <strong> 在代码生成已经足够廉价的今天，agent 应该自己锻造自己的工具。  </strong></p>
+<p>大部分 agent 框架靠 markdown skills 来扩展能力——本质上是一份说明书，告诉 LLM &quot;用 shell 跑这个命令，再用 grep</p>
+<p>处理一下&quot;。每次执行都要 LLM 重新理解说明书、串联多个内置工具，结果不稳定，耗 token 也多。</p>
+<p>Soleclaw 换了个思路：当 agent 发现缺某个能力时，它会调用 Forge 引擎——底层其实就是启动一个 Claude Code</p>
+<p>子进程——去生成真正的可执行代码，注册成一个 first-class 工具。之后再遇到同类任务，LLM</p>
+<p>只需要选对工具、填对参数，一次调用就搞定。所有逻辑都在生成的代码里，不在 LLM 的 reasoning chain 里。</p>
+<p>之所以选 Claude Code 来做工具生成，是因为目前 Claude Code 的 coding 能力确实是最强的。让最强的 coder</p>
+<p>来写工具，写出来的工具质量自然也更高。</p>
+<p>开始 vibing!</p>
+<p>过了半小时后第一个版本已经出来了，再修了一下 bug 并且体验了一下发现，这个版本有很大不足：</p>
+<ol><li>当时测试的时候我选择的是 gpt-5.3-codex，但是在加载了大量上下文（AGENTS.md, SOUL.md, USER.md）之后，模型的表现很差，它不再遵守我给他的 system prompt：eg. 在做任务前要考虑一下是不是可以写一个工具来完成这些任务，并且主动使用已有的工具，等等。 </li><li>发现可能是模型的问题之后，我切换成了 sonnet-4.6。效果确实好了不少。我一开始在做设计的时候，准备先支持 Anthropic 和 OpenAI，同时支持了二者的 API 以及 OAuth 模式。但实际上我只有这两个平台的 plan 会员，并没有 API platform 的会员。这就导致： </li><li>实际上我只能测 OAuth 模式，甚至不知道 API token 的形式能不能 work，也不会用。 </li><li>Codex 效果拉了我其实也不会用，那其实也没必要现在支持 OpenAI。 </li></ol>
+<p>发现这一点之后我又默默反省了一下，还是古法 coding + 开源做多了，新建一个项目默认还是觉得这会是一个 general 的项目。但其实 general</p>
+<p>的意义已经不是太大了，因为：</p>
+<ul><li>越 specific，效果（性能）越好。参考各种 engine 和 gpu 的优化....当然，产品也一样 </li><li>general 带来的通用性和可复用性，已经不再是我们需要关注的了。BECAUSE CODING IS CHEAP! </li></ul>
+<h3>开始重构</h3>
+<p>没错，第一版写了没多久，我就决定开始重构了。</p>
+<p>\好耶/</p>
+<p>第二版的重构很明确，因为我知道实际上我只想用 claude code。</p>
+<p>第一版写了 agent loop、多 provider 抽象、OAuth 认证，加起来大概 1800 行代码，重构后直接把这些全删了，换成了  `</p>
+<p>claude-agent-sdk  ` ——SDK 负责 LLM 调用、工具执行循环和 session 管理，Soleclaw 只需要提供 system</p>
+<p>prompt、自定义 MCP 工具（forge、cron、memory 等）以及 channel 路由（Telegram、CLI）。Auth</p>
+<p>也全删了，因为反正用的是 claude code，认证是 SDK 的事。</p>
+<p>一波重构下来，代码从 4500 行缩到了不到 3000 行，而且更稳定了。 所以这个项目就变成了 :</p>
+<p>个人优化版 nanobot+openclaw -&gt; 个人优化版 claude code wrapper</p>
+<p>当然了，Soleclaw 还是保留着核心的 memory, telegram integration, cron 以及自动编写+使用工具的能力</p>
+<h3>测试体验</h3>
+<p>直接用最开始提到的例子，todo + hackernews 收集来测试。 首先，让他帮我记下 todo。</p>
+<p>![](https://mmbiz.qpic.cn/mmbiz_png/33XTL1nKRRQj9uh9SC1Gpz0J1xSay20PibcIBZ3pgfIo5Qy0kibQt2hTHukmGAicG9FM6fQVEUVXZ2IMzE1208IIOGnWa9DnplyGV7CC6qib1OE/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>成功！Soleclaw 主动提出做个专属的工具，并且会先和我商量需求再开始干活。 再测试一下 hacker news 的任务</p>
+<p>![](https://mmbiz.qpic.cn/mmbiz_png/33XTL1nKRRSjoic0UlzchiaTsIk3P86Ywda0icfAHnhKzwMCdibys0wFPbvhXF3vlOpIPl1WdbgcSNcEytNttnbvsScU6GOZpGiaJ3lMmib17YHTM/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>Agent 一开始并不认为这是一个需要工具的任务，他说的其实也有道理，不过在我提供了更多 context 之后，它还是开始写这个 hackernews</p>
+<p>任务收集的工具了。继续和他沟通需求，他也主动提出了把之前的 todo 工具再改一下，能够适应和其他工具的集成。</p>
+<p>![](https://mmbiz.qpic.cn/sz_mmbiz_png/33XTL1nKRRSZD4mvquUQ3L6A9SETY7jzyHFict6XPec7PxHsvbay0DvJbia0ux5MiaEG7oNMQ6JSyk8etzPWgoIibSqMtUriccTs8mO5ibXn9cpjg/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>当工具完成后，当他给我发 HackerNews Daily summary 的时候，我就可以直接告诉他我想看哪条，并且让他加到 todo 里</p>
+<p>![](https://mmbiz.qpic.cn/sz_mmbiz_png/33XTL1nKRRTz9XicLbP0ctDtyTXR0PCN1MskCfI6wia3C1kZ0FVauueUaTKtIprf8Xe1S0WgMYdfxqQYrXqzrE2IK2LoE6hTiamtLHSbOLaf6s/640?wx_fmt=png&amp;from=appmsg)</p>
+<p>Check 一下目前的 Todo，没有问题，数据是集成的！And that&#x27;s what I want！</p>
+<p>![](https://mmbiz.qpic.cn/mmbiz_jpg/33XTL1nKRRQzcicia63LLIKP5vP3nWSVsXpA7a9n2gibOLZQqMMywWl9CcpUhvvUCjPkuekw24Vy2zIkqsacNAhMkGyibJacCHUMEyQyRrINTZ0/640?wx_fmt=jpeg&amp;from=appmsg)</p>
+<h3>总结</h3>
+<p>说实话，在一个已经有很多开箱即用的开源项目的基础上，还愿意自己手搓一个项目，这是一件我以前从来不会去做的事情，我之前是一个非常反对重复造轮子的人。</p>
+<p>但是，大人，时代变了！</p>
+<p>如果要用 story telling 的方式包装一下这个项目的话：</p>
+<blockquote>你有没有想过，如果你的 AI 助手今天不会做某件事，明天它就自己学会了——不是因为开发者推了个更新，而是因为它自己写了一个工具？  Soleclaw 是一个会「长出新能力」的 AI 助手。当你让它做一件它还不会的事，它不会说&quot;抱歉我做不到&quot;，而是说&quot;我可以为这个写一个工具，你觉得呢？&quot;。然后它真的会写，写完就能用。  你用得越多，它就越懂你。不是那种&quot;记住你的名字&quot;的懂，而是它的工具箱会慢慢长成你的形状——你常看 Hacker News，它就有了新闻收集器；你习惯记 Todo，它就有了任务管理器；你两个需求一碰，它自己就把数据打通了。  这不是一个更好的 chatbot，这是一个会进化的数字工具人。</blockquote>
+<p>↑嗯嗯，AI 实在是太会讲故事了...</p>
+<p>但其实他目前和其他 claw 项目主要的区别，就是加上了主动去造工具的 system prompt，调用一个 sub claude code</p>
+<p>造工具，并且把工具塞到 tool 里让 agent 继续使用。</p>
+<p>（说实话感觉 anthropic 迟早有一天也会实现这样的功能）</p>
+<p>但 anyway，这是一个目前非常贴合我需求的工具，所以我用的很开心。并且，虽然 Coding is cheap，但是 Vibing 真的很好玩！</p>
+<p>昨天同事还问我最近在玩什么游戏，我当时的回复是：逃离鸭科夫（虽然是几个月前玩的了）。不过很显然白人并不知道这是个啥游戏，只知道逃离塔科夫。</p>
+<p>但现在想想，当时我的答案并不准确。因为其实我最近在玩的游戏，叫做 Vibe Coding😁</p>
+<p>预览时标签不可点</p>
+<p>修改于</p>
+<p>不喜欢</p>
+<p>微信扫一扫</p>
+<p>关注该公众号</p>
+<p>知道了</p>
+<p>微信扫一扫</p>
+<p>使用小程序</p>
+<hr>
+<p>取消  允许</p>
+<hr>
+<p>取消  允许</p>
+<hr>
+<p>取消  允许</p>
+<p>×  分析</p>
+<p>__</p>
+<p>!<a href="http://mmbiz.qpic.cn/sz_mmbiz_png/33XTL1nKRRQ7N9Qn33Xtew8bXmiatTFer0yoFUZ3wW7gAic7TruQvKkIlyia9TEN0GHX6u9fKZVib8cAmauAPUulBeXD79iclUcQ4D0tDcLWrUicI/0?wx_fmt=png">作者头像</a></p>
+<p>微信扫一扫可打开此内容，</p>
+<p>使用完整服务</p>
+<p>：  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  ，  。  视频  小程序  赞  ，轻点两下取消赞  在看  ，轻点两下取消在看</p>
+<p>分享  留言  收藏  听过</p>
+<footer>生成于 2026-10-25 20:57 · build_site.py</footer>
+</div></body></html>
